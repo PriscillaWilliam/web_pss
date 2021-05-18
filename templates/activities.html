@@ -1,0 +1,56 @@
+{% extends 'index.html' %}
+{% block home %}{% endblock %}
+{% block content %}
+
+<section class="section">
+<div class="section-header">
+    <h1>Activities</h1>
+</div>
+<div class="section-body">
+    <h2 class="section-title">Timelines</h2>
+    <form method="GET" action="/download/">
+    {% csrf_token %}
+        <button class="float-right btn btn-primary" value="Print">Download Report</button>
+    </form>
+    <div class="row">
+    <div class="col-12">
+        <div class="activities">
+        {% for line in f_contents %}
+        {% if 'successfully' in line %}
+        <div class="activity">
+            <div class="activity-icon bg-primary text-white shadow-primary">
+            <i class="fas fa-id-card"></i>
+            </div>
+            <div class="activity-detail">
+                <div> {{line|slice:":19"}} </div>
+                <div style="color:green;">{{line|slice:"24:"}}</div>
+            </div>
+        </div>
+        {% elif 'Lost/Damage' in line %}
+        <div class="activity">
+            <div class="activity-icon bg-primary text-white shadow-primary">
+            <i class="fas fa-id-card"></i>
+            </div>
+            <div class="activity-detail">
+                <div> {{line|slice:":19"}} </div>
+                <div style="color:orange;">{{line|slice:"24:"}}</div>
+            </div>
+        </div>
+        {% elif 'Personalisation failed' in line %}
+        <div class="activity">
+            <div class="activity-icon bg-primary text-white shadow-primary">
+            <i class="fas fa-id-card"></i>
+            </div>
+            <div class="activity-detail">
+                <div> {{line|slice:":19"}} </div>
+                <div style="color:red;">{{line|slice:"24:"}}</div>
+            </div>
+        </div>
+        {% endif%}
+        {% endfor %}
+        </div>
+    </div>
+    </div>
+</div>
+</section>
+{% endblock%}

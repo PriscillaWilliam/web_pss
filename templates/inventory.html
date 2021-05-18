@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+{% block home %}{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="section-header">
+        <h1>Inventory Information</h1>
+    </div>
+    <div class="section-body">
+        
+            <script>
+              function filename(){
+                var input = document.getElementById("customFile");
+                var x = input.value;
+                $('#filelabel').text(x.substring(12,))
+              }
+                
+            </script>
+            <form method="POST" action="/iBtn/" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="col-12 d-inline-flex mb-3">
+              <div class="custom-file col-6">
+                <input type="file" class="custom-file-input" id="customFile" name="file"  onchange="filename()" accept=".csv">
+                <label class="custom-file-label" for="customFile" id="filelabel">Choose File</label>
+              </div>
+              <div class="ml-3">
+                <button type="submit" class="btn btn-primary">Upload</button>
+              </div>
+            </div>
+            </form>
+        </div>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Card serial number</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for result in results%}
+              <tr>
+                <td>{{result|slice:"9:"}}</td>
+                <td>{{result|slice:"0:9"}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</section>
+{% endblock %}

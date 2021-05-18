@@ -1,0 +1,7 @@
+/assets/node_modules
+/venv
+*.pyc
+__pycache__/
+*/__pycache__/
+/activities_report.pdf
+*.log

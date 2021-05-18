@@ -1,0 +1,151 @@
+{% extends 'index.html' %}
+{% block home %}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="section-header">
+      <h1>VAV Selection</h1>
+  </div>
+  <div class="section-body">
+        <form method="POST" action="/test/">
+        {% csrf_token %}
+      <div class="form-group row">
+        <label class="col-sm-1 col-form-label">Size</label>
+        <div class="col-sm-2">
+          <div class="controls">
+                        <select class="form-control input-sm" name="position" id="position" data-rel="chosen" >
+                        <option selected disabled >Auto</option>
+                        </select>
+                        </div>
+        </div>
+          <div class="col-sm-1"></div>
+          <label class="col-sm-1 col-form-label">Design Airflow</label>
+          <div class="col-sm-2">
+                <input type="text" class="form-control" id="airflow" name="airflow"
+                       value="{% for d in data %} {{d.DateJoined}} {% endfor %}{{effdt}}">
+            </div>
+          <label class="col-sm-1 col-form-label mt-1">CFM</label>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-2">
+          <button type="submit" id="getdata" class="btn btn-primary mt-1">Calculate</button>
+        </div>
+      </div>
+        <div class="form-group row"></div>
+            <input type="hidden" id="staff_id" name="staff_id">
+           <div class="form-group row">
+            <label class="col-sm-1 col-form-label">Minimum Airflow</label>
+          <div class="col-sm-2">
+                <input type="text" class="form-control" id="min_airflow" name="min_airflow"
+                       value="{% for d in data %} {{d.DateJoined}} {% endfor %}{{effdt}}">
+            </div>
+          <label class="col-sm-1 col-form-label mt-1">CFM</label>
+
+                <label class="col-sm-1 col-form-label">Attenuator</label>
+          <div class="col-sm-2">
+          <div class="controls">
+                        <select class="form-control input-sm" name="attenuator" id="attenuator" data-rel="chosen" >
+                         <option selected>Yes</option>
+                            <option>No</option>
+                        </select>
+                        </div>
+        </div>
+
+        <div class="col-sm-1"></div>
+
+        </div>
+        <div class="form-group row">
+             <label class="col-sm-1 col-form-label">Outlet Type</label>
+          <div class="col-sm-2">
+          <div class="controls">
+                        <select class="form-control input-sm" name="outlet_type" id="outlet_type" data-rel="chosen" >
+                         <option selected>Standard Outlet</option>
+                            <option>Multiple Outlet</option>
+                            <option>Round Discharge</option>
+                            <option>1 meter Attenuator</option>
+                        </select>
+                        </div>
+        </div>
+            <div class="col-sm-1"></div>
+            <label class="col-sm-1 col-form-label">Insulation</label>
+          <div class="col-sm-2">
+          <div class="controls">
+                        <select class="form-control input-sm" name="insulation" id="insulation" data-rel="chosen" >
+                         <option selected>1" Fibre glass</option>
+                            <option>1/2" Fibre glass</option>
+                        </select>
+                        </div>
+        </div>
+        </div>
+        <div class="form-group row">
+
+            <label class="col-sm-1 col-form-label">Controls</label>
+          <div class="col-sm-2">
+          <div class="controls">
+                        <select class="form-control input-sm" name="controls" id="controls" data-rel="chosen" >
+                         <option selected>None</option>
+                            <option>PrudentAire ZoneEase</option>
+                            <option>Belimo ZoneEase</option>
+                            <option>Honeywell</option>
+                            <option>Siemens</option>
+                        </select>
+                        </div>
+        </div>
+            </div>
+        </form>
+<div class="form-group row">
+
+        </div>
+        <div class="form-group row">
+                <label class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+            <input type="submit" name="button" value="View Report" id="updatebtn" disabled style="height:35px" class="btn btn-primary btn-sm col-sm-1"/>
+            </div>
+            </div>
+<br>{% if data %}
+            <div class="row">
+    <div class="col-md-10 ">
+        <table class="table table-bordered table-condensed table-light table-hover">
+        <thead align="center">
+            <th>Size (inch)</th>
+            <th>CFM</th>
+            <th>Discharge NR</th>
+            <th>Radiated NR</th>
+            <th>View</th>
+            <th>Select</th>
+        </thead>
+        <tbody align="center" style="border-color:red;">
+        {% for rows in data %}
+           <!--<td><strong>{{ forloop.counter }} </strong></td>-->
+        <tr>
+            <td><strong>{{ rows.size_inch }}</strong></td>
+            <td><strong>{{ rows.cfm }}</strong></td>
+            <td><strong>{{ rows.discharge_nr }}</strong></td>
+            <td><strong>{{ rows.radiated_nr }}</strong></td>
+            <td><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample{{ forloop.counter }}" role="button" aria-expanded="false" aria-controls="collapseExample{{ forloop.counter }}">
+                        Expand
+                      </a>
+            </td>
+            <td><a href="/disp/" class="btn btn-primary btn-xs">Add</a> </td>
+        <tr class="collapse" id="collapseExample{{ forloop.counter }}">
+            <td>{{ rows.size_inch }}</td>
+            <td>{{ rows.cfm }}</td>
+            <td>{{ forloop.counter }}</td>
+            <td>123</td>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ forloop.counter }}</td>
+        </tr>
+
+        {% endfor %}
+        </tbody>
+        </table>
+
+        <br>
+
+
+    </div>
+    </div>
+      {% endif %}
+  </div>
+</section>
+{% endblock %}
