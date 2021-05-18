@@ -21,7 +21,7 @@
           <label class="col-sm-1 col-form-label">Design Airflow</label>
           <div class="col-sm-2">
                 <input type="text" class="form-control" id="airflow" name="airflow"
-                       value="{% for d in data %} {{d.DateJoined}} {% endfor %}{{effdt}}">
+                       value="{{airflow_input}}">
             </div>
           <label class="col-sm-1 col-form-label mt-1">CFM</label>
         <div class="col-sm-1"></div>
@@ -35,7 +35,7 @@
             <label class="col-sm-1 col-form-label">Minimum Airflow</label>
           <div class="col-sm-2">
                 <input type="text" class="form-control" id="min_airflow" name="min_airflow"
-                       value="{% for d in data %} {{d.DateJoined}} {% endfor %}{{effdt}}">
+                       value="{{min_airflow}}">
             </div>
           <label class="col-sm-1 col-form-label mt-1">CFM</label>
 
@@ -96,9 +96,9 @@
         </div>
         <div class="form-group row">
                 <label class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
+           <!-- <div class="col-sm-10">
             <input type="submit" name="button" value="View Report" id="updatebtn" disabled style="height:35px" class="btn btn-primary btn-sm col-sm-1"/>
-            </div>
+            </div>-->
             </div>
 <br>{% if data %}
             <div class="row">
@@ -106,18 +106,19 @@
         <table class="table table-bordered table-condensed table-light table-hover">
         <thead align="center">
             <th>Size (inch)</th>
-            <th>CFM</th>
             <th>Discharge NR</th>
             <th>Radiated NR</th>
             <th>View</th>
             <th>Select</th>
+            <th></th>
+            <th></th>
+            <th></th>
         </thead>
         <tbody align="center" style="border-color:red;">
-        {% for rows in data %}
+        {% for rows,d,r in data %}
            <!--<td><strong>{{ forloop.counter }} </strong></td>-->
         <tr>
             <td><strong>{{ rows.size_inch }}</strong></td>
-            <td><strong>{{ rows.cfm }}</strong></td>
             <td><strong>{{ rows.discharge_nr }}</strong></td>
             <td><strong>{{ rows.radiated_nr }}</strong></td>
             <td><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample{{ forloop.counter }}" role="button" aria-expanded="false" aria-controls="collapseExample{{ forloop.counter }}">
@@ -125,16 +126,34 @@
                       </a>
             </td>
             <td><a href="/disp/" class="btn btn-primary btn-xs">Add</a> </td>
-        <tr class="collapse" id="collapseExample{{ forloop.counter }}">
-            <td>{{ rows.size_inch }}</td>
-            <td>{{ rows.cfm }}</td>
-            <td>{{ forloop.counter }}</td>
-            <td>123</td>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ forloop.counter }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+
+        <tr class="collapse" id="collapseExample{{ forloop.counter }}" align="center">
+
+            <td><b>Discharge<br> Acoustic Data</b></td>
+            <td><b>125Hz</b><br><br>{{ d.Hz125 }}<br><br></td>
+            <td><b>250Hz</b><br><br>{{ d.Hz250 }}<br><br></td>
+            <td><b>500Hz</b><br><br>{{ d.Hz500 }}<br><br></td>
+            <td><b>1000Hz</b><br><br>{{ d.Hz1000 }}<br><br></td>
+            <td><b>2000Hz</b><br><br>{{ d.Hz2000 }}<br><br></td>
+            <td><b>4000Hz</b><br><br>{{ d.Hz4000 }}<br><br></td>
+            <td><b>NR</b><br><br>{{ d.NR }}<br><br></td>
         </tr>
+        <tr class="collapse" id="collapseExample{{ forloop.counter }}" align="center">
+
+            <td><b>Radiated<br> Acoustic Data</b></td>
+            <td><b>125Hz</b><br><br>{{ r.Hz125 }}</td>
+            <td><b>250Hz</b><br><br>{{ r.Hz250 }}</td>
+            <td><b>500Hz</b><br><br>{{ r.Hz500 }}</td>
+            <td><b>1000Hz</b><br><br>{{ r.Hz1000 }}</td>
+            <td><b>2000Hz</b><br><br>{{ r.Hz2000 }}</td>
+            <td><b>4000Hz</b><br><br>{{ r.Hz4000 }}</td>
+            <td><b>NR</b><br><br>{{ r.NR }}</td>
+        </tr>
+
 
         {% endfor %}
         </tbody>

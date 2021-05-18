@@ -1,3 +1,6 @@
+import json
+
+from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
@@ -90,18 +93,38 @@ class VAV(LoginRequiredMixin, TemplateView):
 def test(request):
     context = {}
     airflow_input = request.POST.get('airflow', False)
+    min_cfm = request.POST.get('min_airflow',False)
+    if not min_cfm:
+        min_cfm = int(float(airflow_input)*0.3)
 
     select_cfm_query = airflow.objects.filter(cfm_max__gte=airflow_input)[:3]
     display_queryset = performance.objects.none()
-
+    radiated_queryset = radiated_acoustic_data.objects.none()
+    discharge_queryset = discharge_acoustic_data.objects.none()
     for rows in select_cfm_query:
         performance_query = performance.objects.filter(size_inch=rows.size_inch).extra(
             select={"cfm_new": "abs(cfm-"+airflow_input+")"}).order_by("cfm_new")[:1]
         display_queryset |= performance_query
 
-    context['data'] = display_queryset
+        radiated_acoustic_query = radiated_acoustic_data.objects.filter(size_inch=rows.size_inch).extra(
+            select={"cfm_new": "abs(cfm-"+airflow_input+")"}).order_by("cfm_new")[:1]
+        radiated_queryset |= radiated_acoustic_query
+
+        discharge_acoustic_query = discharge_acoustic_data.objects.filter(size_inch=rows.size_inch).extra(
+            select={"cfm_new": "abs(cfm-" + airflow_input + ")"}).order_by("cfm_new")[:1]
+        discharge_queryset |= discharge_acoustic_query
+
+    zipped_list = zip(display_queryset,discharge_queryset,radiated_queryset)
+
+    #context['data'] = display_queryset
+    context['data'] = zipped_list
+    context['r_data'] = radiated_queryset
+    context['d_data'] = discharge_queryset
+    context['airflow_input'] = airflow_input
+    context['min_airflow'] = min_cfm
 
     return render(request, 'vav.html',context)
+
 def disp(request):
     selected_vav = request.GET.get('s', False)
     print(selected_vav)

@@ -41,3 +41,32 @@ class performance(models.Model):
         db_table = 'performance'
         managed = False
 
+class discharge_acoustic_data(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='id')
+    size_inch = models.CharField(max_length=5, db_column='size_inch')
+    cfm = models.IntegerField(db_column='cfm')
+    Hz125 = models.IntegerField(db_column='125')
+    Hz250 = models.IntegerField(db_column='250')
+    Hz500 = models.IntegerField(db_column='500')
+    Hz1000 = models.IntegerField(db_column='1000')
+    Hz2000 = models.IntegerField(db_column='2000')
+    Hz4000 = models.IntegerField(db_column='4000')
+    NR = models.IntegerField(db_column='NR')
+    class Meta:
+        db_table = 'discharge_acoustic_data'
+        managed = False
+
+class radiated_acoustic_data(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='id')
+    size_inch = models.CharField(max_length=5, db_column='size_inch')
+    cfm = models.IntegerField(db_column='cfm')
+    Hz125 = models.IntegerField(db_column='125')
+    Hz250 = models.IntegerField(db_column='250')
+    Hz500 = models.IntegerField(db_column='500')
+    Hz1000 = models.IntegerField(db_column='1000')
+    Hz2000 = models.IntegerField(db_column='2000')
+    Hz4000 = models.IntegerField(db_column='4000')
+    NR = models.IntegerField(db_column='NR')
+    class Meta:
+        db_table = 'radiated_acoustic_data'
+        managed = False
