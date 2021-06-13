@@ -94,6 +94,10 @@ def test(request):
     context = {}
     airflow_input = request.POST.get('airflow', False)
     min_cfm = request.POST.get('min_airflow',False)
+
+    test = request.POST.getlist('door',False)
+    print(test)
+
     if not min_cfm:
         min_cfm = int(float(airflow_input)*0.3)
 
@@ -126,7 +130,7 @@ def test(request):
     return render(request, 'vav.html',context)
 
 def disp(request):
-    selected_vav = request.GET.get('s', False)
+    selected_vav = request.POST.get('addVav', False)
     print(selected_vav)
     return render(request, 'vav.html')
 
