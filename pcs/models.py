@@ -70,3 +70,12 @@ class radiated_acoustic_data(models.Model):
     class Meta:
         db_table = 'radiated_acoustic_data'
         managed = False
+
+class cart(models.Model):
+    id = models.IntegerField(primary_key=True, db_column='id')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quantity = models.IntegerField(db_column='quantity')
+    size = models.CharField(max_length=10, db_column='size')
+    class Meta:
+        db_table = 'cart'
+        managed = False

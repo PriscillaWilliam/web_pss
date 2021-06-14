@@ -90,16 +90,29 @@ class VAV(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         return super(VAV, self).get_context_data(**kwargs)
 
+vav_input_data = {}
+
 def test(request):
+
     context = {}
     airflow_input = request.POST.get('airflow', False)
     min_cfm = request.POST.get('min_airflow',False)
-
-    test = request.POST.getlist('door',False)
-    print(test)
-
     if not min_cfm:
         min_cfm = int(float(airflow_input)*0.3)
+
+    print(vav_input_data)
+    size = request.POST.get('size')
+    attenuator = request.POST.get('attenuator')
+    outlet_type = request.POST.get('outlet_type')
+    insulation = request.POST.get('insulation')
+    controls = request.POST.get('controls')
+    vav_input_data['size'] = size;
+    vav_input_data['design_airflow'] = airflow_input;
+    vav_input_data['minimum_cfm'] = min_cfm;
+    vav_input_data['attenuator'] = attenuator;
+    vav_input_data['outlet_type'] = outlet_type;
+    vav_input_data['insulation'] = insulation;
+    vav_input_data['controls'] = controls;
 
     select_cfm_query = airflow.objects.filter(cfm_max__gte=airflow_input)[:3]
     display_queryset = performance.objects.none()
@@ -131,7 +144,9 @@ def test(request):
 
 def disp(request):
     selected_vav = request.POST.get('addVav', False)
-    print(selected_vav)
+    min_af = request.POST.get('min_airflow', False)
+    print(selected_vav,vav_input_data)
+    vav_input_data.clear()
     return render(request, 'vav.html')
 
 class CommonView(LoginRequiredMixin, TemplateView):
@@ -140,7 +155,10 @@ class CommonView(LoginRequiredMixin, TemplateView):
     template_name = "vav.html"
 
     def get_context_data(self, **kwargs):
-
+        user_cart = cart.objects.get(user_id=self.request.user.id)
+        kwargs['cart'] = cart.objects.filter(user_id=self.request.user.id)
+        kwargs['test'] = "test"
+        print(user_cart.quantity)
         return super(CommonView, self).get_context_data(**kwargs)
 
 

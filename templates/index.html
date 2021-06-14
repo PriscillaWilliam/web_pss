@@ -36,6 +36,39 @@
           </ul>
         </form>
         <ul class="navbar-nav mr-3">
+
+
+          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="fas fa-shopping-cart"></i></a>
+            <div class="dropdown-menu dropdown-list dropdown-menu-right">
+              <div class="dropdown-header">Selection List
+                <div class="float-right">
+                  <a href="#"><i class="fas fa-times"></i></a>
+                </div>
+              </div>
+              <div class="dropdown-list-content dropdown-list-icons">
+              {% if cart %}
+                {% for items in cart %}
+                <a class="dropdown-item">
+                  <div class="dropdown-item-icon bg-info text-white">
+                    {{ forloop.counter }}
+                  </div>
+                  <div class="dropdown-item-desc">
+                    {{ items.size }}
+                    <div class="time">Yesterday</div>
+                  </div>
+                </a>
+                {% endfor %}
+                {% endif %}
+              </div>
+              <div class="dropdown-footer text-center">
+                <a href="/a/">View All <i class="fas fa-chevron-right"></i></a>
+              </div>
+            </div>
+          </li>
+
+
+
+
           <li class="dropdown"><a href="#" data-toggle="dropdown"
               class="nav-link dropdown-toggle nav-link-lg nav-link-user">
               <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}" class="rounded-circle mr-1">
