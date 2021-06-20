@@ -103,7 +103,9 @@
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header"></li>
-           <li class="menu-header">Products Menu</li>
+            <li class="{{name5}}"><a class="nav-link" href="{% url 'project'%}"><i class="fas fa-cog"></i>
+                <span>Project Information</span></a></li>
+            <li class="menu-header">Products Menu</li>
             <li class="menu-header"></li>
             <li class="{{name}}"><a class="nav-link" href="{% url 'vav'%}"><i class="fas fa-id-card"></i>
                 <span>Variable Air Volume Units (VAV)</span></a></li>
@@ -116,11 +118,7 @@
             <li class="menu-header"></li>
             <li class="{{name3}}"><a class="nav-link" href="{% url 'lost_damage'%}"><i
                   class="fas fa-file-signature"></i><span>Reports</span></a></li>
-            <li class="menu-header"></li>
-            <li class="{{name5}}"><a class="nav-link" href="{% url 'setting'%}"><i class="fas fa-cog"></i>
-                <span>Settings</span></a></li>
-          </ul>
-
+           </ul>
           <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
             <a href="https://www.prudentaire.com/" class="btn btn-primary btn-lg btn-block btn-icon-split">
               <i class="fas fa-rocket"></i> About

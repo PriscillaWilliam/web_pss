@@ -4,12 +4,14 @@
 
 <section class="section">
   <div class="section-header">
-      <h1>VAV Selection</h1>
+      <div class="col-sm-4"> <h1>VAV Selection</h1> </div>
+      {% if current_project %}<div class="col-sm-6 float-right"> Working Project Name :- {{ current_project }} </div>{% endif %}
   </div>
   <div class="section-body">
         <form method="POST" action="/test/">
         {% csrf_token %}
       <div class="form-group row">
+          <input type="hidden" id="pid" name="pid" value="{{current_pid}}"/>
         <label class="col-sm-1 col-form-label">Size</label>
         <div class="col-sm-2">
           <div class="controls">
@@ -129,7 +131,8 @@
                         Expand
                       </a>
             </td>
-            <td><button name="addVav" value="{{rows.size_inch}}" type="submit" id="add" class="btn btn-primary mt-1">Add</button></td>
+            <td><button name="addVav" value="{{rows.size_inch}}^{{rows.cfm}}^{{rows.discharge_nr}}^{{rows.radiated_nr}}"
+                        type="submit" id="add" class="btn btn-primary mt-1">Add</button></td>
           <!--  <td><a href="" class="btn btn-primary btn-xs">Add</a> </td> -->
             <td></td>
             <td></td>

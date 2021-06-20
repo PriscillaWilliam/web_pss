@@ -21,3 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),  
 ]
+
+from django.contrib import admin
+admin.site.site_header = 'Prudent Aire Selection Software Admin'
+admin.site.index_title = 'Admin area'
+admin.site.site_title = 'PSS site admin'

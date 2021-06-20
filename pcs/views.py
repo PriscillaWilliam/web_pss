@@ -21,6 +21,7 @@ import os
 from pathlib import Path
 from django.shortcuts import render
 from pcs.models import *
+
 from organisation_structure.models import *
 
 
@@ -88,6 +89,11 @@ class VAV(LoginRequiredMixin, TemplateView):
     template_name = "vav.html"
 
     def get_context_data(self, **kwargs):
+        user_current_proj_id = user_project_mapping.objects.get(user=self.request.user.id)
+        user_current_proj_name = project_info.objects.get(id=user_current_proj_id.id)
+        kwargs['current_project'] = user_current_proj_name.project_name
+        kwargs['current_pid'] = user_current_proj_id.id
+        kwargs['cart'] = cart.objects.filter(user=self.request.user.id)
         return super(VAV, self).get_context_data(**kwargs)
 
 vav_input_data = {}
@@ -97,22 +103,25 @@ def test(request):
     context = {}
     airflow_input = request.POST.get('airflow', False)
     min_cfm = request.POST.get('min_airflow',False)
+
     if not min_cfm:
         min_cfm = int(float(airflow_input)*0.3)
 
     print(vav_input_data)
+    pid = request.POST.get('pid')
     size = request.POST.get('size')
     attenuator = request.POST.get('attenuator')
     outlet_type = request.POST.get('outlet_type')
     insulation = request.POST.get('insulation')
     controls = request.POST.get('controls')
-    vav_input_data['size'] = size;
-    vav_input_data['design_airflow'] = airflow_input;
-    vav_input_data['minimum_cfm'] = min_cfm;
-    vav_input_data['attenuator'] = attenuator;
-    vav_input_data['outlet_type'] = outlet_type;
-    vav_input_data['insulation'] = insulation;
-    vav_input_data['controls'] = controls;
+    vav_input_data['size'] = size
+    vav_input_data['design_airflow'] = airflow_input
+    vav_input_data['minimum_cfm'] = min_cfm
+    vav_input_data['attenuator'] = attenuator
+    vav_input_data['outlet_type'] = outlet_type
+    vav_input_data['insulation'] = insulation
+    vav_input_data['controls'] = controls
+    vav_input_data['pid'] = pid
 
     select_cfm_query = airflow.objects.filter(cfm_max__gte=airflow_input)[:3]
     display_queryset = performance.objects.none()
@@ -144,21 +153,37 @@ def test(request):
 
 def disp(request):
     selected_vav = request.POST.get('addVav', False)
-    min_af = request.POST.get('min_airflow', False)
-    print(selected_vav,vav_input_data)
+    selected_vav_info = selected_vav.split('^')
+    cart_item = cart(user=request.user.id
+                     , quantity=1
+                     , size=vav_input_data['size']
+                     , design_airflow=vav_input_data['design_airflow']
+                     , min_airflow=vav_input_data['minimum_cfm']
+                     , attenuator=vav_input_data['attenuator']
+                     , outlet_type=vav_input_data['outlet_type']
+                     , insulation=vav_input_data['insulation']
+                     , controls=vav_input_data['controls']
+                     , vav_size=selected_vav_info[0]
+                     , cfm=selected_vav_info[1]
+                     , dNR=selected_vav_info[2]
+                     , rNR=selected_vav_info[3]
+                     , project=vav_input_data['pid']
+                     , product=1
+                     )
+    #uncomment after testing
+    cart_item.save()
     vav_input_data.clear()
-    return render(request, 'vav.html')
+    #return render(request, 'vav.html')
+    return redirect('/vav/')
 
 class CommonView(LoginRequiredMixin, TemplateView):
     login_url = 'login'
     redirect_field_name = 'redirect_to'
-    template_name = "vav.html"
+    template_name = "projectInfo.html"
 
     def get_context_data(self, **kwargs):
-        user_cart = cart.objects.get(user_id=self.request.user.id)
-        kwargs['cart'] = cart.objects.filter(user_id=self.request.user.id)
+        kwargs['cart'] = cart.objects.filter(user=self.request.user.id)
         kwargs['test'] = "test"
-        print(user_cart.quantity)
         return super(CommonView, self).get_context_data(**kwargs)
 
 
@@ -179,14 +204,36 @@ def inventory(request):
     return render(request, 'inventory.html', {'name4': 'active'})
 
 
-class settingView(LoginRequiredMixin, TemplateView):
-    template_name = 'setting.html'
+class ProjectView(LoginRequiredMixin, TemplateView):
+    template_name = 'projectInfo.html'
     login_url = 'login'
     redirect_field_name = 'redirect_to'
 
     def get_context_data(self, **kwargs):
+        date_string = ""
+        p_name = self.request.GET.get("p_name", None)
+        p_info = project_info.objects.filter(project_name=p_name)
+        for dt in p_info:
+            date_string = str(dt.project_date)
+            pid = dt.id
+        user_current_proj_id = user_project_mapping.objects.get(user=self.request.user.id)
+        user_current_proj_name = project_info.objects.get(id=user_current_proj_id.id)
+        print(user_current_proj_id.id, user_current_proj_name.project_name)
+
+        if p_name:
+            user_project_update = user_project_mapping.objects.get(user=self.request.user.id)
+            user_project_update.project = pid
+            user_project_update.save()
+
+        kwargs['ps'] = p_info
+        kwargs['pd'] = date_string
         kwargs['name5'] = 'active'
-        return super(settingView, self).get_context_data(**kwargs)
+        kwargs['cart'] = cart.objects.filter(user=self.request.user.id)
+        kwargs['projects'] = project_info.objects.filter(user=self.request.user.id)
+        kwargs['current_project'] = user_current_proj_name.project_name
+        kwargs['current_pid'] = user_current_proj_id.id
+
+        return super(ProjectView, self).get_context_data(**kwargs)
 
 
 class loginView(TemplateView):

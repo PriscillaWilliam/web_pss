@@ -1,0 +1,133 @@
+{% extends 'index.html' %}
+{% block home %}{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="section-header">
+        <div class="col-sm-4"><h1>Project Information</h1></div>
+            {% if current_project %}<div class="col-sm-6 float-right"> Working Project Name :- {{ current_project }} </div>{% endif %}
+    </div>
+    <div class="section-body">
+        <form id="getform" method="get" action="/p/">
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Project Name</label>
+
+            <div class="col-sm-8">
+                <div class="controls">
+                        <select class="form-control input-sm" name="p_name" id="p_name" data-rel="chosen" onchange="sel();">
+                        <option selected>{% for p in ps %} {{p.project_name}} {% endfor %}</option>
+                            {% for p in projects %} <option> {{p.project_name}} </option> {% endfor %}
+                        </select>
+                      </div>
+                <script>
+                    function sel(){
+                    document.getElementById("getform").submit();
+                    }
+                </script>
+               <!-- <div class="ml-1">
+                    <button class="btn btn-icon btn-primary"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                -->
+            </div>
+            </div>
+        </form>
+            <form method="POST" action="">
+                    {% csrf_token %}
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Project Number</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="p_number" name="p_number"
+                            value="{% for p in ps %} {{p.project_number}} {% endfor %}">
+            </div>
+                <div class="col-sm-1"></div>
+                <label class="col-sm-1 col-form-label">Date</label>
+            <div class="col-sm-3">
+                <div class="controls">
+              <input type="date" class="form-control" id="p_date" name="p_date"
+                            value="{{pd}}">
+                </div>
+            </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Location</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="location" name="location"
+                            value="{% for p in ps %} {{p.location}} {% endfor %}">
+            </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label">City</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="city" name="city"
+                            value="{% for p in ps %} {{p.city}} {% endfor %}">
+            </div>
+                <div class="col-sm-1"></div>
+                <label class="col-sm-1 col-form-label">State</label>
+            <div class="col-sm-3">
+               <input type="text" class="form-control" id="state" name="state"
+                            value="{% for p in ps %} {{p.state}} {% endfor %}">
+            </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Engineer</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="engineer" name="engineer"
+                            value="{% for p in ps %} {{p.engineer}} {% endfor %}">
+            </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Client Name</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="client_name" name="client_name"
+                            value="{% for p in ps %} {{p.client_name}} {% endfor %}">
+            </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Consultant Name</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="consultant_name" name="consultant_name"
+                            value="{% for p in ps %} {{p.consultant_name}} {% endfor %}">
+            </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Prepared By</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="p_by" name="p_by"
+                            value="{% for p in ps %} {{p.prepared_by}} {% endfor %}">
+            </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Notes/Remarks</label>
+            <div class="col-sm-8">
+              <textarea class="form-control form-control-sm" id="remarks" name="remarks"> {% for p in ps %} {{p.remarks}} {% endfor %}
+              </textarea>
+            </div>
+            </div>
+
+            <div class="form-group row" >
+                <div class="col-sm-10" align="center">
+                <button type="submit" id="save" class="btn btn-primary mt-2"> Save Changes </button>
+             <!--    <button id="start_selection" class="btn btn-primary mt-2"> Start Selection </button> -->
+             <!--   <button id="edit" class="btn btn-primary mt-2" onclick="f()"> Edit </button> -->
+                </div>
+            </div>
+        <!--
+        <script>
+        function f(){
+        document.getElementById('p_name').removeAttribute('readonly');
+        }
+        </script>
+        -->
+
+        </form>
+
+    </div>
+</section>
+{% endblock %}

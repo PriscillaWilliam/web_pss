@@ -72,10 +72,64 @@ class radiated_acoustic_data(models.Model):
         managed = False
 
 class cart(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='id')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True, db_column='id')
+    user = models.IntegerField(db_column='user_id')
     quantity = models.IntegerField(db_column='quantity')
     size = models.CharField(max_length=10, db_column='size')
+    design_airflow = models.IntegerField(db_column='design_airflow')
+    min_airflow = models.IntegerField(db_column='min_airflow')
+    attenuator = models.CharField(max_length=5, db_column='attenuator')
+    outlet_type = models.CharField(max_length=150, db_column='outlet_type')
+    insulation = models.CharField(max_length=100, db_column='insulation')
+    controls = models.CharField(max_length=255, db_column='controls')
+    vav_size = models.CharField(max_length=10, db_column='vav_size')
+    dNR = models.IntegerField(db_column='dNR')
+    rNR = models.IntegerField(db_column='rNR')
+    d125 = models.IntegerField(db_column='d125')
+    d250 = models.IntegerField(db_column='d250')
+    d500 = models.IntegerField(db_column='d500')
+    d1000 = models.IntegerField(db_column='d1000')
+    d2000 = models.IntegerField(db_column='d2000')
+    d4000 = models.IntegerField(db_column='d4000')
+    r125 = models.IntegerField(db_column='r125')
+    r250 = models.IntegerField(db_column='r250')
+    r500 = models.IntegerField(db_column='r500')
+    r1000 = models.IntegerField(db_column='r1000')
+    r2000 = models.IntegerField(db_column='r2000')
+    r4000 = models.IntegerField(db_column='r4000')
+    project = models.IntegerField(db_column='project_id')
+    product = models.IntegerField(db_column='product_id')
+    cfm = models.IntegerField(db_column='cfm')
+
     class Meta:
         db_table = 'cart'
+        managed = False
+
+class project_info(models.Model):
+    id = models.AutoField(primary_key=True, db_column='id')
+    project_name = models.CharField(max_length=255, db_column='project_name')
+    project_number = models.CharField(max_length=255,db_column='project_number')
+    user = models.IntegerField(db_column='user_id')
+    project_date = models.DateField(db_column='project_date')
+    location = models.CharField(max_length=255, db_column='location')
+    city = models.CharField(max_length=255, db_column='city')
+    state = models.CharField(max_length=255, db_column='state')
+    engineer = models.CharField(max_length=255, db_column='engineer')
+    client_name = models.CharField(max_length=255, db_column='client_name')
+    consultant_name = models.CharField(max_length=255, db_column='consultant_name')
+    prepared_by = models.CharField(max_length=255, db_column='prepared_by')
+    remarks = models.CharField(max_length=255, db_column='remarks')
+   # created_at = models.DateField(db_column='created_at',default=datetime.now())
+
+    class Meta:
+        db_table = 'project_info'
+        managed = False
+
+class user_project_mapping(models.Model):
+    id = models.AutoField(primary_key=True, db_column='id')
+    user = models.IntegerField(db_column='user_id')
+    project = models.IntegerField(db_column='project_id')
+
+    class Meta:
+        db_table = 'user_project_mapping'
         managed = False
