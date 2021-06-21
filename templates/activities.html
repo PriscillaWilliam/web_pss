@@ -4,50 +4,68 @@
 
 <section class="section">
 <div class="section-header">
-    <h1>Activities</h1>
+    <div class="col-sm-4"><h1>Selection List</h1> </div>
+      {% if current_project %}<div class="col-sm-6 float-right"> Working Project Name :- {{ current_project }} </div>{% endif %}
 </div>
 <div class="section-body">
-    <h2 class="section-title">Timelines</h2>
     <form method="GET" action="/download/">
-    {% csrf_token %}
+    {% csrf_token %}<label>Selection Summary</label>
         <button class="float-right btn btn-primary" value="Print">Download Report</button>
-    </form>
+    </form><br>
     <div class="row">
     <div class="col-12">
         <div class="activities">
-        {% for line in f_contents %}
-        {% if 'successfully' in line %}
-        <div class="activity">
-            <div class="activity-icon bg-primary text-white shadow-primary">
-            <i class="fas fa-id-card"></i>
-            </div>
-            <div class="activity-detail">
-                <div> {{line|slice:":19"}} </div>
-                <div style="color:green;">{{line|slice:"24:"}}</div>
-            </div>
-        </div>
-        {% elif 'Lost/Damage' in line %}
-        <div class="activity">
-            <div class="activity-icon bg-primary text-white shadow-primary">
-            <i class="fas fa-id-card"></i>
-            </div>
-            <div class="activity-detail">
-                <div> {{line|slice:":19"}} </div>
-                <div style="color:orange;">{{line|slice:"24:"}}</div>
-            </div>
-        </div>
-        {% elif 'Personalisation failed' in line %}
-        <div class="activity">
-            <div class="activity-icon bg-primary text-white shadow-primary">
-            <i class="fas fa-id-card"></i>
-            </div>
-            <div class="activity-detail">
-                <div> {{line|slice:":19"}} </div>
-                <div style="color:red;">{{line|slice:"24:"}}</div>
-            </div>
-        </div>
-        {% endif%}
+            {% if cart %}
+            <table class="table table-bordered table-condensed table-light table-hover">
+        <thead align="center">
+            <th width="100">Tag   </th>
+            <th>Qty</th>
+            <th>AHU</th>
+            <th>VAV Size</th>
+            <th>Design Airflow</th>
+            <th>Min Airflow</th>
+            <th>Atten.</th>
+            <th>Outlet Type</th>
+            <th>Insulation</th>
+            <th>Controls</th>
+        </thead>
+        <tbody align="center" style="border-color:red;">
+        {% for c in cart %}
+           <!--<td><strong>{{ forloop.counter }} </strong></td>-->
+        <tr>
+            <td><strong>{{c.tag|default_if_none:""}}</strong></td>
+            <td><strong>{{c.quantity|default_if_none:""}}</strong></td>
+            <td><strong>{{c.ahu|default_if_none:""}}</strong></td>
+            <td><strong>{{c.vav_size}}</strong></td>
+            <td><strong>{{c.design_airflow}}</strong></td>
+            <td><strong>{{c.min_airflow}}</strong></td>
+            <td><strong>{{c.attenuator}}</strong></td>
+            <td><strong>{{c.outlet_type}}</strong></td>
+            <td><strong>{{c.insulation}}</strong></td>
+            <td><strong>{{c.controls|default_if_none:""}}</strong></td>
+        </tr>
         {% endfor %}
+        </tbody>
+        </table>
+        <!--
+        {% for c in cart %}
+        <div class="activity">
+           <div class="activity-icon bg-primary text-white shadow-primary">
+            <i class="fas fa-id-card"></i>
+            </div>
+            <div class="activity-detail">
+                <div> VAV - Size {{c.vav_size}} </div>
+                <div style="color:orange;">Design Airflow - {{c.design_airflow}} </div>
+                <div style="color:orange;">Minimum Airflow - {{c.min_airflow}} </div>
+                <div style="color:orange;">Attenuator - {{c.attenuator}} </div>
+                <div style="color:orange;">Outlet Type - {{c.outlet_type}} </div>
+                <div style="color:orange;">Insulation - {{c.insulation}} </div>
+                <div style="color:orange;">Controls - {{c.controls}} </div>
+            </div>
+        </div>
+        {% endfor %}
+        -->
+            {% endif %}
         </div>
     </div>
     </div>

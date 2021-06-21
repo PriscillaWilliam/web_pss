@@ -10,6 +10,26 @@
   <div class="section-body">
         <form method="POST" action="/test/">
         {% csrf_token %}
+            <div class="form-group row text-primary"data-height="45">
+          <label class="col-sm-1 col-form-label">Tag</label>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="tag" name="tag"
+                        value="{{tag}}">
+        </div>
+          <div class="col-sm-1"></div>
+          <label class="col-sm-1 col-form-label">Quantity</label>
+          <div class="col-sm-2">
+                <input type="text" class="form-control" id="quantity" name="quantity"
+                        value="{{quantity}}">
+            </div>
+          <div class="col-sm-1"></div>
+          <label class="col-sm-1 col-form-label">AHU</label>
+          <div class="col-sm-2">
+                <input type="text" class="form-control" id="ahu" name="ahu"
+                        value="{{ahu}}">
+            </div>
+      </div>
+<br>
       <div class="form-group row">
           <input type="hidden" id="pid" name="pid" value="{{current_pid}}"/>
         <label class="col-sm-1 col-form-label">Size</label>
@@ -27,22 +47,17 @@
                        required value="{{airflow_input}}">
             </div>
           <label class="col-sm-1 col-form-label mt-1">CFM</label>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-2">
-          <button type="submit" id="getdata" class="btn btn-primary mt-1">Calculate</button>
-        </div>
-      </div>
-        <div class="form-group row"></div>
-            <input type="hidden" id="staff_id" name="staff_id">
-           <div class="form-group row">
-            <label class="col-sm-1 col-form-label">Minimum Airflow</label>
+          <label class="col-sm-1 col-form-label">Minimum Airflow</label>
           <div class="col-sm-2">
                 <input type="text" class="form-control" id="min_airflow" name="min_airflow"
                        value="{{min_airflow}}">
             </div>
           <label class="col-sm-1 col-form-label mt-1">CFM</label>
+      </div>
+            <input type="hidden" id="staff_id" name="staff_id">
 
-                <label class="col-sm-1 col-form-label">Attenuator</label>
+        <div class="form-group row">
+            <label class="col-sm-1 col-form-label">Attenuator</label>
           <div class="col-sm-2">
           <div class="controls">
                         <select class="form-control input-sm" name="attenuator" id="attenuator" data-rel="chosen" >
@@ -50,12 +65,7 @@
                             <option>No</option>
                         </select>
                         </div>
-        </div>
-
-        <div class="col-sm-1"></div>
-
-        </div>
-        <div class="form-group row">
+        </div><div class="col-sm-1"></div>
              <label class="col-sm-1 col-form-label">Outlet Type</label>
           <div class="col-sm-2">
           <div class="controls">
@@ -92,19 +102,21 @@
                         </select>
                         </div>
         </div>
+
             </div>
+            <div class="col-sm-11 m-3" align="center">
+          <button type="submit" id="getdata" class="btn btn-primary">Calculate</button>
+        </div>
         </form>
 
-<div class="form-group row">
 
-        </div>
         <div class="form-group row">
                 <label class="col-sm-2 col-form-label"></label>
            <!-- <div class="col-sm-10">
             <input type="submit" name="button" value="View Report" id="updatebtn" disabled style="height:35px" class="btn btn-primary btn-sm col-sm-1"/>
             </div>-->
             </div>
-<br>{% if data %}
+{% if data %}
       <form method="POST" action="/disp/">
         {% csrf_token %}
             <div class="row">

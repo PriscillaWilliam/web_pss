@@ -75,6 +75,8 @@ class cart(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     user = models.IntegerField(db_column='user_id')
     quantity = models.IntegerField(db_column='quantity')
+    tag = models.CharField(max_length=20, db_column='tag')
+    ahu = models.CharField(max_length=50, db_column='ahu')
     size = models.CharField(max_length=10, db_column='size')
     design_airflow = models.IntegerField(db_column='design_airflow')
     min_airflow = models.IntegerField(db_column='min_airflow')

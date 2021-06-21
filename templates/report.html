@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section class="section">
+<div class="section-header">
+    <h1>Selection List</h1>
+</div>
+<div class="section-body">
+    <div class="row">
+    <div class="col-12">
+        <div class="activities">
+            {% if cart %}
+        {% for c in cart %}
+        <div class="activity">
+            <div class="activity-icon bg-primary text-white shadow-primary">
+            <i class="fas fa-id-card"></i>
+            </div>
+            <div class="activity-detail">
+                <div> {{c.size}} </div>
+                <div style="color:orange;">{{c.design_airflow}}</div>
+            </div>
+        </div>
+        {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    </div>
+</div>
+</section>
+{% endblock%}
+
+</body>
+</html>
+

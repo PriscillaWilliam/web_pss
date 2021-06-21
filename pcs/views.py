@@ -30,23 +30,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def activities(request):
+    context = {}
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=15)
+    pdf.set_font("Times", size=12)
+
+    user_current_proj_id = user_project_mapping.objects.get(user=request.user.id)
+    user_current_proj_name = project_info.objects.get(id=user_current_proj_id.id)
+    context['current_project'] = user_current_proj_name.project_name
+    context['current_pid'] = user_current_proj_id.id
+
     f = open(os.path.join(BASE_DIR, 'debug4.log'), 'r')
     now = datetime.datetime.now()
-    pdf.cell(200, 10, txt="Card Management Report", ln=1, align='L')
-    pdf.cell(200, 10, txt="Date Generated: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=1, align='L')
-    for x in f:
+    pdf.cell(20, 4, txt="Prudent Aire                                                                "
+                        "                                                         "
+                        " VAV Selection", ln=1, align='L',)
+    #pdf.cell(40, 2, txt="Date Generated: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=1, align='R')
+    pdf.cell(40, 2, txt="", ln=1, align='R')
+    context['cart'] = cart.objects.filter(user=request.user.id)
+    cart_items = cart.objects.filter(user=request.user.id)
 
-        if "Reported" in x:
-            pdf.cell(200, 10, txt=x[0:19] + " -- " + x[23:], ln=1, align='L')
-        elif "successfully" in x:
-            pdf.cell(200, 10, txt=x[0:19] + " -- " + x[23:], ln=1, align='L')
-        elif "Personalisation failed" in x:
-            pdf.cell(200, 10, txt=x[0:19] + " -- " + x[23:], ln=1, align='L')
-        else:
-            continue
+    for c in cart_items:
+        pdf.cell(200, 10, txt=str(c.size) + " -- " + str(c.design_airflow), ln=1, align='L')
     f.close()
     pdf.output(os.path.join(BASE_DIR, 'activities_report.pdf'))
     with open(os.path.join(BASE_DIR, 'debug4.log'), 'r') as f:
@@ -54,9 +59,7 @@ def activities(request):
 
         for x in reversed(f.readlines()):
             flist.append(x.rstrip())
-        context = {
-            'f_contents': flist
-        }
+
 
     return render(request, 'activities.html', context)
 
@@ -99,15 +102,25 @@ class VAV(LoginRequiredMixin, TemplateView):
 vav_input_data = {}
 
 def test(request):
-
+    vav_input_data.clear()
     context = {}
+    tag = request.POST.get('tag', False)
+    quantity = request.POST.get('quantity', False)
+    if not quantity:
+        quantity = 1
+    ahu = request.POST.get('ahu', False)
     airflow_input = request.POST.get('airflow', False)
     min_cfm = request.POST.get('min_airflow',False)
+
+    user_current_proj_id = user_project_mapping.objects.get(user=request.user.id)
+    user_current_proj_name = project_info.objects.get(id=user_current_proj_id.id)
+    context['current_project'] = user_current_proj_name.project_name
+    context['current_pid'] = user_current_proj_id.id
 
     if not min_cfm:
         min_cfm = int(float(airflow_input)*0.3)
 
-    print(vav_input_data)
+    #print(vav_input_data)
     pid = request.POST.get('pid')
     size = request.POST.get('size')
     attenuator = request.POST.get('attenuator')
@@ -122,6 +135,9 @@ def test(request):
     vav_input_data['insulation'] = insulation
     vav_input_data['controls'] = controls
     vav_input_data['pid'] = pid
+    vav_input_data['tag'] = tag
+    vav_input_data['quantity'] = quantity
+    vav_input_data['ahu'] = ahu
 
     select_cfm_query = airflow.objects.filter(cfm_max__gte=airflow_input)[:3]
     display_queryset = performance.objects.none()
@@ -148,6 +164,9 @@ def test(request):
     context['d_data'] = discharge_queryset
     context['airflow_input'] = airflow_input
     context['min_airflow'] = min_cfm
+    context['tag'] = tag
+    context['quantity'] = quantity
+    context['ahu'] = ahu
 
     return render(request, 'vav.html',context)
 
@@ -155,7 +174,9 @@ def disp(request):
     selected_vav = request.POST.get('addVav', False)
     selected_vav_info = selected_vav.split('^')
     cart_item = cart(user=request.user.id
-                     , quantity=1
+                     , tag=vav_input_data['tag']
+                     , quantity=vav_input_data['quantity']
+                     , ahu=vav_input_data['ahu']
                      , size=vav_input_data['size']
                      , design_airflow=vav_input_data['design_airflow']
                      , min_airflow=vav_input_data['minimum_cfm']

@@ -38,7 +38,7 @@
         <ul class="navbar-nav mr-3">
 
 
-          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="fas fa-shopping-cart"></i></a>
+          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="fas fa-bell"></i></a>
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
               <div class="dropdown-header">Selection List
                 <div class="float-right">
@@ -53,15 +53,15 @@
                     {{ forloop.counter }}
                   </div>
                   <div class="dropdown-item-desc">
-                    {{ items.size }}
-                    <div class="time">Yesterday</div>
+                    VAV - size {{ items.vav_size }}
+                  <!--  <div class="time">Yesterday</div> -->
                   </div>
                 </a>
                 {% endfor %}
                 {% endif %}
               </div>
               <div class="dropdown-footer text-center">
-                <a href="/a/">View All <i class="fas fa-chevron-right"></i></a>
+                <a href="/a/">View Summary <i class="fas fa-chevron-right"></i></a>
               </div>
             </div>
           </li>
@@ -80,7 +80,7 @@
                 <i class="far fa-user"></i> Profile
               </a>-->
               <a href="/a/" class="dropdown-item has-icon">
-                <i class="fas fa-bolt"></i> Activities
+                <i class="fas fa-bolt"></i> Selection List
               </a>
               <!--  <a href="features-settings.html" class="dropdown-item has-icon">
                 <i class="fas fa-cog"></i> Settings
