@@ -37,7 +37,7 @@ def activities(request):
 
     user_current_proj_id = user_project_mapping.objects.get(user=request.user.id)
     user_current_proj_name = project_info.objects.get(id=user_current_proj_id.id)
-    context['current_project'] = user_current_proj_name.project_name
+    context['cp'] = user_current_proj_name
     context['current_pid'] = user_current_proj_id.id
 
     f = open(os.path.join(BASE_DIR, 'debug4.log'), 'r')
