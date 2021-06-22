@@ -4,8 +4,8 @@
 
 <section class="section">
   <div class="section-header">
-      <div class="col-sm-4"> <h1>VAV Selection</h1> </div>
-      {% if current_project %}<div class="col-sm-6 float-right"> Working Project Name :- {{ current_project }} </div>{% endif %}
+      <div class="col-sm-3"> <h1>VAV Selection</h1> </div>
+      {% if current_project %}<div class="col-sm-6" align="center"> <strong>Project Name :- </strong> &nbsp; {{ current_project }} </div>{% endif %}
   </div>
   <div class="section-body">
         <form method="POST" action="/test/">
@@ -143,8 +143,13 @@
                         Expand
                       </a>
             </td>
-            <td><button name="addVav" value="{{rows.size_inch}}^{{rows.cfm}}^{{rows.discharge_nr}}^{{rows.radiated_nr}}"
-                        type="submit" id="add" class="btn btn-primary mt-1">Add</button></td>
+            <td>{% if current_project %}
+                <button name="addVav" value="{{rows.size_inch}}^{{rows.cfm}}^{{rows.discharge_nr}}^{{rows.radiated_nr}}"
+                        type="submit" id="add" class="btn btn-primary mt-1" >Add</button>
+                {%else%}
+                <button class="btn btn-primary mt-1" disabled>Add</button>
+                {% endif %}
+            </td>
           <!--  <td><a href="" class="btn btn-primary btn-xs">Add</a> </td> -->
             <td></td>
             <td></td>

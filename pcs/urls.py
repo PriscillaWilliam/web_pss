@@ -7,6 +7,7 @@ urlpatterns = [
     path('vav/',VAV.as_view(), name='vav'),
     path('r/',read, name='read'),
     path('test/',test, name='test'),
+    path('save/',save_project, name='save'),
     path('disp/',disp, name='disp'),
     path('ld/',lost_damage, name='lost_damage'),
     path('i/',inventory, name='inventory'),

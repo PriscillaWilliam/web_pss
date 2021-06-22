@@ -38,7 +38,12 @@
         <ul class="navbar-nav mr-3">
 
 
-          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="fas fa-bell"></i></a>
+          <li class="dropdown dropdown-list-toggle">
+            {% if cart %}
+            <a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="fas fa-bell"></i></a>
+            {%else%}
+            <a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg"><i class="fas fa-bell"></i></a>
+            {%endif%}
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
               <div class="dropdown-header">Selection List
                 <div class="float-right">
@@ -80,7 +85,7 @@
                 <i class="far fa-user"></i> Profile
               </a>-->
               <a href="/a/" class="dropdown-item has-icon">
-                <i class="fas fa-bolt"></i> Selection List
+                <i class="fas fa-bolt"></i> Selection Summary
               </a>
               <!--  <a href="features-settings.html" class="dropdown-item has-icon">
                 <i class="fas fa-cog"></i> Settings

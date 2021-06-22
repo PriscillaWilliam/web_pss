@@ -3,5 +3,5 @@
 *.pyc
 __pycache__/
 */__pycache__/
-/activities_report.pdf
+/SelectionReport.pdf
 *.log

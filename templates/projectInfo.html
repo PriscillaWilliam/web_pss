@@ -3,20 +3,67 @@
 {% block content %}
 <section class="section">
     <div class="section-header">
-        <div class="col-sm-4"><h1>Project Information</h1></div>
-            {% if current_project %}<div class="col-sm-6 float-right"> Working Project Name :- {{ current_project }} </div>{% endif %}
+        <div class="col-sm-3"><h1>Project Information</h1></div>
+     <!--       {% if current_project %}<div class="col-sm-6" align="center"> <b>Project Name :- </b>&nbsp; {{ current_project }} </div>{% endif %} -->
     </div>
     <div class="section-body">
-        <form id="getform" method="get" action="/p/">
+        <div class="form-group row">
+            <div class="col-sm-2"></div>
+                <div class="controls col-sm-2">
+                    <input type="radio" id="select_old" name="radio" checked value="SELECT" onclick="showSelect()">
+                    <label for="select_old">Choose Project</label>
+                </div>
+                <div class="controls col-sm-2">
+                    <input type="radio" id="add_new" name="radio" value="ADD" onclick="showAdd()">
+                    <label for="add_new">New Project</label>
+                </div>
+            </div>
+        </div>
 
+
+                <script>
+                function clear(){
+                document.getElementById('p_name').value = ''
+                document.getElementById('p_number').value = ''
+                document.getElementById('p_date').value = ''
+                document.getElementById('location').value = ''
+                document.getElementById('city').value = ''
+                document.getElementById('state').value = ''
+                document.getElementById('engineer').value = ''
+                document.getElementById('client_name').value = ''
+                document.getElementById('consultant_name').value = ''
+                document.getElementById('p_by').value = ''
+                document.getElementById('remarks').value = ''
+                }
+                function showAdd() {
+                clear();
+                var add = document.getElementById("myADD");
+                var sel = document.getElementById("mySELECT");
+                  if (add.style.display === "none") {
+                    add.style.display = "block";
+                    sel.style.display = "none";
+                  }
+                }
+                function showSelect() {
+                clear();
+                var sel = document.getElementById("mySELECT");
+                var add = document.getElementById("myADD");
+                  if (sel.style.display === "none") {
+                    sel.style.display = "block";
+                    add.style.display = "none";
+                  }
+                }
+                </script>
+        <form id="getform" method="get" action="/p/">
+        <div id="mySELECT" style="display: block">
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Project Name</label>
 
             <div class="col-sm-8">
                 <div class="controls">
                         <select class="form-control input-sm" name="p_name" id="p_name" data-rel="chosen" onchange="sel();">
-                        <option selected>{% for p in ps %} {{p.project_name}} {% endfor %}</option>
-                            {% for p in projects %} <option> {{p.project_name}} </option> {% endfor %}
+                        <option selected>{{p.project_name}}</option>
+                            {% for pr in projects %} <option value="{{pr.project_name}}"> {{pr.project_name}} </option> {% endfor %}
                         </select>
                       </div>
                 <script>
@@ -24,20 +71,35 @@
                     document.getElementById("getform").submit();
                     }
                 </script>
+
                <!-- <div class="ml-1">
                     <button class="btn btn-icon btn-primary"><i class="fas fa-sync-alt"></i></button>
                 </div>
                 -->
             </div>
             </div>
+        </div>
         </form>
-            <form method="POST" action="">
+
+            <form method="POST" action="/save/" id="proj_data">
                     {% csrf_token %}
+                <div id="myADD" style="display: none">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Project Name</label>
+                        <div class="col-sm-8">
+                        <input class="form-control" type="text" id="new_p_name" name="new_p_name" value="">
+                        </div>
+                    </div>
+            </div>
+
+
             <div class="form-group row">
             <label class="col-sm-2 col-form-label">Project Number</label>
             <div class="col-sm-3">
+                <input type="hidden" class="form-control" id="pid" name="pid"
+                            value="{{p.id}}">
               <input type="text" class="form-control" id="p_number" name="p_number"
-                            value="{% for p in ps %} {{p.project_number}} {% endfor %}">
+                            value="{{p.project_number}}">
             </div>
                 <div class="col-sm-1"></div>
                 <label class="col-sm-1 col-form-label">Date</label>
@@ -53,7 +115,7 @@
             <label class="col-sm-2 col-form-label">Location</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" id="location" name="location"
-                            value="{% for p in ps %} {{p.location}} {% endfor %}">
+                            value="{{p.location}}">
             </div>
             </div>
 
@@ -61,13 +123,13 @@
             <label class="col-sm-2 col-form-label">City</label>
             <div class="col-sm-3">
               <input type="text" class="form-control" id="city" name="city"
-                            value="{% for p in ps %} {{p.city}} {% endfor %}">
+                            value="{{p.city}}">
             </div>
                 <div class="col-sm-1"></div>
                 <label class="col-sm-1 col-form-label">State</label>
             <div class="col-sm-3">
                <input type="text" class="form-control" id="state" name="state"
-                            value="{% for p in ps %} {{p.state}} {% endfor %}">
+                            value="{{p.state}}">
             </div>
             </div>
 
@@ -75,7 +137,7 @@
             <label class="col-sm-2 col-form-label">Engineer</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" id="engineer" name="engineer"
-                            value="{% for p in ps %} {{p.engineer}} {% endfor %}">
+                            value="{{p.engineer}}">
             </div>
             </div>
 
@@ -83,7 +145,7 @@
             <label class="col-sm-2 col-form-label">Client Name</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" id="client_name" name="client_name"
-                            value="{% for p in ps %} {{p.client_name}} {% endfor %}">
+                            value="{{p.client_name}}">
             </div>
             </div>
 
@@ -91,7 +153,7 @@
             <label class="col-sm-2 col-form-label">Consultant Name</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" id="consultant_name" name="consultant_name"
-                            value="{% for p in ps %} {{p.consultant_name}} {% endfor %}">
+                            value="{{p.consultant_name}}">
             </div>
             </div>
 
@@ -99,21 +161,20 @@
             <label class="col-sm-2 col-form-label">Prepared By</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" id="p_by" name="p_by"
-                            value="{% for p in ps %} {{p.prepared_by}} {% endfor %}">
+                            value="{{p.prepared_by|default_if_none:''}}">
             </div>
             </div>
 
             <div class="form-group row">
             <label class="col-sm-2 col-form-label">Notes/Remarks</label>
             <div class="col-sm-8">
-              <textarea class="form-control form-control-sm" id="remarks" name="remarks"> {% for p in ps %} {{p.remarks}} {% endfor %}
-              </textarea>
+              <textarea class="form-control form-control-sm" id="remarks" name="remarks">{{p.remarks}}</textarea>
             </div>
             </div>
 
             <div class="form-group row" >
                 <div class="col-sm-10" align="center">
-                <button type="submit" id="save" class="btn btn-primary mt-2" disabled> Save Changes </button>
+                <button type="submit" id="save" class="btn btn-primary mt-2"> Save Changes </button>
              <!--    <button id="start_selection" class="btn btn-primary mt-2"> Start Selection </button> -->
              <!--   <button id="edit" class="btn btn-primary mt-2" onclick="f()"> Edit </button> -->
                 </div>

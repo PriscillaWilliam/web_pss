@@ -35,43 +35,42 @@ def activities(request):
     pdf.add_page()
     pdf.set_font("Times", size=12)
 
-    user_current_proj_id = user_project_mapping.objects.get(user=request.user.id)
-    user_current_proj_name = project_info.objects.get(id=user_current_proj_id.id)
-    context['cp'] = user_current_proj_name
-    context['current_pid'] = user_current_proj_id.id
-
-    f = open(os.path.join(BASE_DIR, 'debug4.log'), 'r')
     now = datetime.datetime.now()
     pdf.cell(20, 4, txt="Prudent Aire                                                                "
                         "                                                         "
-                        " VAV Selection", ln=1, align='L',)
-    #pdf.cell(40, 2, txt="Date Generated: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=1, align='R')
+                        " VAV Selection", ln=1, align='L', )
+    # pdf.cell(40, 2, txt="Date Generated: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=1, align='R')
     pdf.cell(40, 2, txt="", ln=1, align='R')
-    context['cart'] = cart.objects.filter(user=request.user.id)
-    cart_items = cart.objects.filter(user=request.user.id)
 
-    for c in cart_items:
-        pdf.cell(200, 10, txt=str(c.size) + " -- " + str(c.design_airflow), ln=1, align='L')
-    f.close()
-    pdf.output(os.path.join(BASE_DIR, 'activities_report.pdf'))
-    with open(os.path.join(BASE_DIR, 'debug4.log'), 'r') as f:
-        flist = []
+    user_current_proj_checker = user_project_mapping.objects.filter(user=request.user.id)
 
-        for x in reversed(f.readlines()):
-            flist.append(x.rstrip())
+    if user_current_proj_checker:
+        user_current_proj_id = user_project_mapping.objects.get(user=request.user.id)
+        user_current_proj_name = project_info.objects.get(id=user_current_proj_id.project)
+        context['cp'] = user_current_proj_name
+        context['current_pid'] = user_current_proj_id.project
+        context['cart'] = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
+        cart_items = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
+        if cart_items:
+            for c in cart_items:
+                pdf.cell(200, 10, txt=str(c.size) + " -- " + str(c.design_airflow), ln=1, align='L')
+    else:
+        context['cp'] = None
+        context['current_pid'] = None
+        context['cart'] = None
 
-
+    pdf.output(os.path.join(BASE_DIR, 'SelectionReport.pdf'))
     return render(request, 'activities.html', context)
 
+
 def download_file(request):
-    fl_path = os.path.join(BASE_DIR, 'activities_report.pdf')
-    filename = 'activities_report.pdf'
+    fl_path = os.path.join(BASE_DIR, 'SelectionReport.pdf')
+    filename = 'SelectionReport.pdf'
     fl = open(fl_path, 'rb')
     mime_type, _ = mimetypes.guess_type(fl_path)
     response = HttpResponse(fl, content_type=mime_type)
     response['Content-Disposition'] = "attachment; filename=%s" % filename
     return response
-
 
 
 class GRD(LoginRequiredMixin, TemplateView):
@@ -92,11 +91,17 @@ class VAV(LoginRequiredMixin, TemplateView):
     template_name = "vav.html"
 
     def get_context_data(self, **kwargs):
-        user_current_proj_id = user_project_mapping.objects.get(user=self.request.user.id)
-        user_current_proj_name = project_info.objects.get(id=user_current_proj_id.id)
-        kwargs['current_project'] = user_current_proj_name.project_name
-        kwargs['current_pid'] = user_current_proj_id.id
-        kwargs['cart'] = cart.objects.filter(user=self.request.user.id)
+        user_current_proj_checker = user_project_mapping.objects.filter(user=self.request.user.id)
+        if user_current_proj_checker:
+            user_current_proj_id = user_project_mapping.objects.get(user=self.request.user.id)
+            user_current_proj_name = project_info.objects.get(id=user_current_proj_id.project)
+            kwargs['current_project'] = user_current_proj_name.project_name
+            kwargs['current_pid'] = user_current_proj_id.project
+            kwargs['cart'] = cart.objects.filter(user=self.request.user.id,project=user_current_proj_id.project)
+        else:
+            kwargs['current_project'] = None
+            kwargs['current_pid'] = None
+            kwargs['cart'] = None
         return super(VAV, self).get_context_data(**kwargs)
 
 vav_input_data = {}
@@ -112,10 +117,15 @@ def test(request):
     airflow_input = request.POST.get('airflow', False)
     min_cfm = request.POST.get('min_airflow',False)
 
-    user_current_proj_id = user_project_mapping.objects.get(user=request.user.id)
-    user_current_proj_name = project_info.objects.get(id=user_current_proj_id.id)
-    context['current_project'] = user_current_proj_name.project_name
-    context['current_pid'] = user_current_proj_id.id
+    user_current_proj_checker = user_project_mapping.objects.filter(user=request.user.id)
+    if user_current_proj_checker:
+        user_current_proj_id = user_project_mapping.objects.get(user=request.user.id)
+        user_current_proj_name = project_info.objects.get(id=user_current_proj_id.project)
+        context['current_project'] = user_current_proj_name.project_name
+        context['current_pid'] = user_current_proj_id.project
+    else:
+        context['current_project'] = None
+        context['current_pid'] = None
 
     if not min_cfm:
         min_cfm = int(float(airflow_input)*0.3)
@@ -134,7 +144,7 @@ def test(request):
     vav_input_data['outlet_type'] = outlet_type
     vav_input_data['insulation'] = insulation
     vav_input_data['controls'] = controls
-    vav_input_data['pid'] = pid
+    vav_input_data['pid'] = context['current_pid']
     vav_input_data['tag'] = tag
     vav_input_data['quantity'] = quantity
     vav_input_data['ahu'] = ahu
@@ -203,7 +213,11 @@ class CommonView(LoginRequiredMixin, TemplateView):
     template_name = "projectInfo.html"
 
     def get_context_data(self, **kwargs):
-        kwargs['cart'] = cart.objects.filter(user=self.request.user.id)
+        user_current_proj_id = user_project_mapping.objects.get(user=self.request.user.id)
+        if user_current_proj_id:
+            kwargs['cart'] = cart.objects.filter(user=self.request.user.id, project=user_current_proj_id.project)
+        else:
+            kwargs['cart'] = None
         kwargs['test'] = "test"
         return super(CommonView, self).get_context_data(**kwargs)
 
@@ -234,27 +248,98 @@ class ProjectView(LoginRequiredMixin, TemplateView):
         date_string = ""
         p_name = self.request.GET.get("p_name", None)
         p_info = project_info.objects.filter(project_name=p_name)
-        for dt in p_info:
-            date_string = str(dt.project_date)
-            pid = dt.id
-        user_current_proj_id = user_project_mapping.objects.get(user=self.request.user.id)
-        user_current_proj_name = project_info.objects.get(id=user_current_proj_id.id)
-        print(user_current_proj_id.id, user_current_proj_name.project_name)
-
         if p_name:
-            user_project_update = user_project_mapping.objects.get(user=self.request.user.id)
-            user_project_update.project = pid
-            user_project_update.save()
+            p_test = project_info.objects.get(project_name=p_name)
+            pid = p_test.id
+        else:
+            p_test = None
+        if p_info:
+            for dt in p_info:
+                date_string = str(dt.project_date)
+            kwargs['ps'] = p_info
 
-        kwargs['ps'] = p_info
+        user_current_proj_checker = user_project_mapping.objects.filter(user=self.request.user.id)
+        if user_current_proj_checker:
+            user_current_proj_id = user_project_mapping.objects.get(user=self.request.user.id)
+            user_current_proj_name = project_info.objects.get(id=user_current_proj_id.project)
+            kwargs['cart'] = cart.objects.filter(user=self.request.user.id, project=user_current_proj_id.project)
+            kwargs['current_project'] = user_current_proj_name.project_name
+            kwargs['current_pid'] = user_current_proj_id.project
+
+            if p_name:
+                user_project_update = user_project_mapping.objects.get(user=self.request.user.id)
+                user_project_update.project = pid
+                user_project_update.save()
+        else:
+            kwargs['cart'] = None
+            kwargs['current_project'] = None
+            kwargs['current_pid'] = None
+
+        kwargs['ps'] = None
+        kwargs['p'] = p_test
         kwargs['pd'] = date_string
         kwargs['name5'] = 'active'
-        kwargs['cart'] = cart.objects.filter(user=self.request.user.id)
         kwargs['projects'] = project_info.objects.filter(user=self.request.user.id)
-        kwargs['current_project'] = user_current_proj_name.project_name
-        kwargs['current_pid'] = user_current_proj_id.id
 
         return super(ProjectView, self).get_context_data(**kwargs)
+
+
+def save_project(request):
+    new_p_name = request.POST.get("new_p_name", None)
+    pid = request.POST.get("pid", None)
+    p_number = request.POST.get("p_number", None)
+    p_date = request.POST.get("p_date", None)
+    location = request.POST.get("location", None)
+    city = request.POST.get("city", None)
+    state = request.POST.get("state", None)
+    engineer = request.POST.get("engineer", None)
+    client_name = request.POST.get("client_name", None)
+    consultant_name = request.POST.get("consultant_name", None)
+    prepared_by = request.POST.get("p_by", None)
+    remarks = request.POST.get("remarks", None)
+    if not p_date:
+        p_date = datetime.date.today()
+    if new_p_name:
+        new_project = project_info(user=request.user.id
+                                   , project_name=new_p_name
+                                   , project_number=p_number
+                                   , project_date=p_date
+                                   , location=location
+                                   , city=city
+                                   , state=state
+                                   , engineer=engineer
+                                   , client_name=engineer
+                                   , consultant_name=engineer
+                                   , prepared_by=prepared_by
+                                   , remarks=remarks
+                                   )
+        new_project.save()
+        print(new_project.id)
+        new_pid = project_info.objects.get(id = new_project.id)
+        user_project_checker = user_project_mapping.objects.filter(user=request.user.id)
+        if user_project_checker:
+            user_project_update = user_project_mapping.objects.get(user=request.user.id)
+            user_project_update.project = new_pid.id
+            user_project_update.save()
+        else:
+            user_project_new_entry = user_project_mapping(user = request.user.id
+                                                          , project = new_pid.id)
+            user_project_new_entry.save()
+
+    elif pid:
+        project_info_update = project_info.objects.get(id=pid)
+        project_info_update.project_number = p_number
+        project_info_update.project_date = p_date
+        project_info_update.location = location
+        project_info_update.city = city
+        project_info_update.state = state
+        project_info_update.engineer = engineer
+        project_info_update.client_name = client_name
+        project_info_update.consultant_name = consultant_name
+        project_info_update.prepared_by = prepared_by
+        project_info_update.remarks = remarks
+        project_info_update.save()
+    return redirect('/p/')
 
 
 class loginView(TemplateView):
