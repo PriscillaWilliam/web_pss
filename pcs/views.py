@@ -148,7 +148,7 @@ def test(request):
     vav_input_data['tag'] = tag
     vav_input_data['quantity'] = quantity
     vav_input_data['ahu'] = ahu
-    print(vav_input_data)
+    #print(vav_input_data)
 
     select_cfm_query = airflow.objects.filter(cfm_max__gte=airflow_input)[:3]
     display_queryset = performance.objects.none()
@@ -250,6 +250,7 @@ class ProjectView(LoginRequiredMixin, TemplateView):
     redirect_field_name = 'redirect_to'
 
     def get_context_data(self, **kwargs):
+        print(self.request.user)
         date_string = ""
         p_name = self.request.GET.get("p_name", None)
         p_info = project_info.objects.filter(project_name=p_name)
@@ -313,13 +314,13 @@ def save_project(request):
                                    , city=city
                                    , state=state
                                    , engineer=engineer
-                                   , client_name=engineer
-                                   , consultant_name=engineer
+                                   , client_name=client_name
+                                   , consultant_name=consultant_name
                                    , prepared_by=prepared_by
                                    , remarks=remarks
                                    )
         new_project.save()
-        print(new_project.id)
+        #print(new_project.id)
         new_pid = project_info.objects.get(id = new_project.id)
         user_project_checker = user_project_mapping.objects.filter(user=request.user.id)
         if user_project_checker:
@@ -344,7 +345,7 @@ def save_project(request):
         project_info_update.prepared_by = prepared_by
         project_info_update.remarks = remarks
         project_info_update.save()
-    return redirect('/p/')
+    return redirect('/vav/')
 
 
 class loginView(TemplateView):
