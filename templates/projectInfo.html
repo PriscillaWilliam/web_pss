@@ -61,9 +61,18 @@
 
             <div class="col-sm-8">
                 <div class="controls">
-                        <select class="form-control input-sm" name="p_name" id="p_name" data-rel="chosen" onchange="sel();">
+                       <!-- old working select tag -->
+                       <!-- <select class="form-control input-sm" name="p_name" id="p_name" data-rel="chosen" onchange="sel();">
                         <option selected>{{p.project_name}}</option>
                             {% for pr in projects %} <option value="{{pr.project_name}}"> {{pr.project_name}} </option> {% endfor %}
+                        </select>
+                        -->
+                    <!-- select tag for testing -->
+                        <select class="form-control input-sm" name="p_name" id="p_name" data-rel="chosen" onchange="sel();">
+                        <option selected></option>
+                            {% for pr in projects %}
+                            {%if pr.project_name == p.project_name%}<option selected>{%else%}<option>{%endif%}{{pr.project_name}}</option>
+                            {% endfor %}
                         </select>
                       </div>
                 <script>

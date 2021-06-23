@@ -60,9 +60,9 @@
             <label class="col-sm-1 col-form-label">Attenuator</label>
           <div class="col-sm-2">
           <div class="controls">
-                        <select class="form-control input-sm" name="attenuator" id="attenuator" data-rel="chosen" >
-                         <option selected>Yes</option>
-                            <option>No</option>
+                        <select class="form-control input-sm" name="attenuator" id="attenuator" data-rel="chosen">
+                            {%if attenuator == 'Yes'%}<option selected>{%else%}<option>{%endif%}Yes</option>
+                            {%if attenuator == 'No'%}<option selected>{%else%}<option>{%endif%}No</option>
                         </select>
                         </div>
         </div><div class="col-sm-1"></div>
@@ -70,10 +70,10 @@
           <div class="col-sm-2">
           <div class="controls">
                         <select class="form-control input-sm" name="outlet_type" id="outlet_type" data-rel="chosen" >
-                         <option selected>Standard Outlet</option>
-                            <option>Multiple Outlet</option>
-                            <option>Round Discharge</option>
-                            <option>1 meter Attenuator</option>
+                         {%if outlet_type == 'Standard Outlet'%}<option selected>{%else%}<option>{%endif%}Standard Outlet</option>
+                         {%if outlet_type == 'Multiple Outlet'%}<option selected>{%else%}<option>{%endif%}Multiple Outlet</option>
+                         {%if outlet_type == 'Round Discharge'%}<option selected>{%else%}<option>{%endif%}Round Discharge</option>
+                         {%if outlet_type == '1 meter Attenuator'%}<option selected>{%else%}<option>{%endif%}1 meter Attenuator</option>
                         </select>
                         </div>
         </div>
@@ -82,8 +82,8 @@
           <div class="col-sm-2">
           <div class="controls">
                         <select class="form-control input-sm" name="insulation" id="insulation" data-rel="chosen" >
-                         <option selected>1" Fibre glass</option>
-                            <option>1/2" Fibre glass</option>
+                         {%if insulation == '1" Fibre glass'%}<option selected>{%else%}<option>{%endif%}1" Fibre glass</option>
+                         {%if insulation == '1/2" Fibre glass'%}<option selected>{%else%}<option>{%endif%}1/2" Fibre glass</option>
                         </select>
                         </div>
         </div>
@@ -94,11 +94,11 @@
           <div class="col-sm-2">
           <div class="controls">
                         <select class="form-control input-sm" name="controls" id="controls" data-rel="chosen" >
-                         <option selected>None</option>
-                            <option>PrudentAire ZoneEase</option>
-                            <option>Belimo ZoneEase</option>
-                            <option>Honeywell</option>
-                            <option>Siemens</option>
+                         {%if controls == 'None'%}<option selected>{%else%}<option>{%endif%}None</option>
+                         {%if controls == 'PrudentAire ZoneEase'%}<option selected>{%else%}<option>{%endif%}PrudentAire ZoneEase</option>
+                         {%if controls == 'Belimo ZoneEase'%}<option selected>{%else%}<option>{%endif%}Belimo ZoneEase</option>
+                         {%if controls == 'Honeywell'%}<option selected>{%else%}<option>{%endif%}Honeywell</option>
+                         {%if controls == 'Siemens'%}<option selected>{%else%}<option>{%endif%}Siemens</option>
                         </select>
                         </div>
         </div>

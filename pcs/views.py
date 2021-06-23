@@ -148,6 +148,7 @@ def test(request):
     vav_input_data['tag'] = tag
     vav_input_data['quantity'] = quantity
     vav_input_data['ahu'] = ahu
+    print(vav_input_data)
 
     select_cfm_query = airflow.objects.filter(cfm_max__gte=airflow_input)[:3]
     display_queryset = performance.objects.none()
@@ -177,6 +178,10 @@ def test(request):
     context['tag'] = tag
     context['quantity'] = quantity
     context['ahu'] = ahu
+    context['attenuator'] = attenuator
+    context['outlet_type'] = outlet_type
+    context['insulation'] = insulation
+    context['controls'] = controls
 
     return render(request, 'vav.html',context)
 
