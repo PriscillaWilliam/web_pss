@@ -9,5 +9,5 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('pcs', '0001_initial'),
+        ('pss', '0001_initial'),
     ]

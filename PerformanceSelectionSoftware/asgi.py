@@ -1,5 +1,5 @@
 """
-ASGI config for PhotoCapturingSystem project.
+ASGI config for PerformanceSelectionSoftware project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PhotoCapturingSystem.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PerformanceSelectionSoftware.settings')
 
 application = get_asgi_application()

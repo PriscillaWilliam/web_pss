@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ["DJANGO_SETTINGS_MODULE"] = 'PhotoCapturingSystem.settings'
+os.environ["DJANGO_SETTINGS_MODULE"] = 'PerformanceSelectionSoftware.settings'
 
 application = get_wsgi_application()

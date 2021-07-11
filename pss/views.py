@@ -20,7 +20,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 import os
 from pathlib import Path
 from django.shortcuts import render
-from pcs.models import *
+from pss.models import *
 
 from organisation_structure.models import *
 
@@ -30,17 +30,103 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def activities(request):
+    print("Summary", request.user, datetime.datetime.now())
+    now = datetime.datetime.now()
     context = {}
     pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Times", size=12)
+    user_current_proj_checker = user_project_mapping.objects.filter(user=request.user.id)
+    if user_current_proj_checker:
+        user_current_proj_id = user_project_mapping.objects.get(user=request.user.id)
+        user_current_proj_name = project_info.objects.get(id=user_current_proj_id.project)
+        context['cp'] = user_current_proj_name
+        context['current_pid'] = user_current_proj_id.project
+        context['cart'] = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
+        cart_items = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
+        if cart_items:
+            i = 1
+            for c in cart_items:
+                print(c.quantity)
+                '''pdf.cell(20, 10, txt=str(c.vav_size), align="R")
+                pdf.cell(10)
+                pdf.cell(20, 10, txt=str(c.design_airflow), align="R")
+                pdf.cell(20, 10, txt=str(c.min_airflow), align="R", ln=1)
+                '''
+                pdf.add_page()
+                pdf.set_font("Times", size=12,style='B')
+                pdf.set_left_margin(15)
+                pdf.set_right_margin(15)
+                pdf.image(os.path.join(BASE_DIR, "static\\assets\\img\\pa_logo.png"), 12, 5, 50, 10)
+                pdf.line(15, 15, 195, 15)
+                pdf.line(15, 45, 195, 45)
 
-    now = datetime.datetime.now()
-    pdf.cell(20, 4, txt="Prudent Aire                                                                "
-                        "                                                         "
-                        " VAV Selection", ln=1, align='L', )
-    # pdf.cell(40, 2, txt="Date Generated: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=1, align='R')
-    pdf.cell(40, 2, txt="", ln=1, align='R')
+                #pdf.cell(25, 4, txt="PRUDENT AIRE", align='L')
+                pdf.cell(145)
+                pdf.set_font("Times", size=14, style='B')
+
+                pdf.cell(20, 4, txt="VAV Selection", ln=1, align='L', )
+                pdf.set_font("Times", size=12, style='B')
+                pdf.cell(20, 6, txt="", ln=1, align='L')
+
+                pdf.rect(15, 17, 180, 9)
+                # pdf.cell(40, 2, txt="Date: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=5, align='R')
+                pdf.cell(20, 2, txt="Project Name:  " + user_current_proj_name.project_name, align='L')
+                pdf.cell(110)
+                #pdf.cell(20, 2, txt="Tag:  " + str(user_current_proj_name.project_date), ln=1, align='L')
+                pdf.cell(20, 2, txt="Tag:  " + "VAV-"+str(i).zfill(2), ln=1, align='L')
+                #print(str(i).zfill(2))
+                pdf.ln(8)
+                pdf.set_font("Times", size=12,style='')
+                pdf.cell(20, 2, txt="Project Number:  " + user_current_proj_name.project_number, align='L')
+                pdf.cell(90)
+                pdf.cell(35, 2, txt="Project Location:", align='L')
+                pdf.cell(20, 2, txt=str(user_current_proj_name.location), ln=1, align='L')
+                pdf.ln(3)
+                pdf.cell(110)
+                pdf.cell(35, 2, txt="Project Date: ", align='L')
+                pdf.cell(20, 2, txt=user_current_proj_name.project_date.strftime("%d-%m-%Y"), ln=1, align='L')
+                pdf.ln(10)
+                pdf.ln(2)
+                pdf.cell(20,2,txt="Selection: ",ln=1)
+                pdf.ln(2)
+                pdf.cell(20, 6, txt="Quantity", border=1,align='C')
+                pdf.cell(20, 6, txt="VAV Size", border=1,align='C')
+                pdf.cell(27, 6, txt="Design airflow", border=1,align='C')
+                pdf.cell(24, 6, txt="Min. airflow", border=1,ln=1,align='C')
+                pdf.cell(20, 6, txt=str(c.quantity), border=1,align='C')
+                pdf.cell(20, 6, txt=str(c.vav_size), border=1,align='C')
+                pdf.cell(27, 6, txt=str(c.design_airflow), border=1,align='C')
+                pdf.cell(24, 6, txt=str(c.min_airflow), border=1,ln=1,align='C')
+
+                pdf.ln(10)
+                pdf.set_font("Times", size=9)
+                pdf.cell(180,4,txt="The results of this program are only an aid to the designer, " \
+                                   "and are not a substitute for professional design services.",align='C',ln=1)
+                pdf.cell(180, 4, txt="All data subject to change without notice.",align='C',ln=1 )
+
+
+                i+=1
+
+    else:
+        context['cp'] = None
+        context['current_pid'] = None
+        context['cart'] = None
+
+
+
+    '''
+    pdf.add_page()
+    pdf.set_font("Times", size=12)    
+    pdf.set_left_margin(15)
+    pdf.set_right_margin(15)
+    pdf.line(15, 15, 195, 15)
+    pdf.cell(20, 4, txt="Prudent Aire",align='L')
+    pdf.cell(125)
+    pdf.cell(20, 4, txt="VAV Selection", ln=1, align='L', )
+    pdf.cell(20, 6, txt="", ln=1, align='L')
+
+    pdf.rect(15,17,180,9)
+
+    #pdf.cell(40, 2, txt="Date: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=5, align='R')
 
     user_current_proj_checker = user_project_mapping.objects.filter(user=request.user.id)
 
@@ -50,15 +136,21 @@ def activities(request):
         context['cp'] = user_current_proj_name
         context['current_pid'] = user_current_proj_id.project
         context['cart'] = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
-        cart_items = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
-        if cart_items:
-            for c in cart_items:
-                pdf.cell(200, 10, txt=str(c.size) + " -- " + str(c.design_airflow), ln=1, align='L')
+        pdf.cell(20, 2, txt="Project Name:  " + user_current_proj_name.project_name, align='L')
+        pdf.cell(110)
+        pdf.cell(20, 2, txt="Tag:  " + str(user_current_proj_name.project_date), ln=1, align='L')
+        pdf.ln(7)
+        pdf.set_left_margin(25)
+        pdf.cell(20, 2, txt="Project Number: " + user_current_proj_name.project_number , align='L')
+        pdf.cell(90)
+        pdf.cell(20, 2, txt="Project Location: " + str(user_current_proj_name.location), ln=1, align='L')
+        pdf.ln(7)
+        
     else:
         context['cp'] = None
         context['current_pid'] = None
         context['cart'] = None
-
+    '''
     pdf.output(os.path.join(BASE_DIR, 'SelectionReport.pdf'))
     return render(request, 'activities.html', context)
 
@@ -74,7 +166,8 @@ def download_file(request):
 
 
 class GRD(LoginRequiredMixin, TemplateView):
-    template_name = 'grd.html'
+    #template_name = 'grd.html'
+    template_name = 'siteunderconstruction.html'
     login_url = 'login'
     redirect_field_name = 'redirect_to'
 
@@ -210,6 +303,8 @@ def disp(request):
     cart_item.save()
     vav_input_data.clear()
     #return render(request, 'vav.html')
+    print("Cart item", request.user, datetime.datetime.now())
+
     return redirect('/vav/')
 
 class CommonView(LoginRequiredMixin, TemplateView):
@@ -250,12 +345,13 @@ class ProjectView(LoginRequiredMixin, TemplateView):
     redirect_field_name = 'redirect_to'
 
     def get_context_data(self, **kwargs):
-        print(self.request.user)
+        print("Login",self.request.user, datetime.datetime.now())
         date_string = ""
         p_name = self.request.GET.get("p_name", None)
-        p_info = project_info.objects.filter(project_name=p_name)
+        #print(p_name)
+        p_info = project_info.objects.filter(id=p_name)
         if p_name:
-            p_test = project_info.objects.get(project_name=p_name)
+            p_test = project_info.objects.get(id=p_name)
             pid = p_test.id
         else:
             p_test = None
@@ -345,6 +441,7 @@ def save_project(request):
         project_info_update.prepared_by = prepared_by
         project_info_update.remarks = remarks
         project_info_update.save()
+    print("Project added", request.user, datetime.datetime.now())
     return redirect('/vav/')
 
 

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class PcsConfig(AppConfig):
-    name = 'pcs'
+class PssConfig(AppConfig):
+    name = 'pss'
     verbose_name = 'Registration of new organisation'

@@ -71,7 +71,7 @@
                         <select class="form-control input-sm" name="p_name" id="p_name" data-rel="chosen" onchange="sel();">
                         <option selected></option>
                             {% for pr in projects %}
-                            {%if pr.project_name == p.project_name%}<option selected>{%else%}<option>{%endif%}{{pr.project_name}}</option>
+                            {%if pr.project_name == p.project_name%}<option value="{{pr.id}}" selected>{%else%}<option value="{{pr.id}}" >{%endif%}{{pr.project_name}}</option>
                             {% endfor %}
                         </select>
                       </div>
