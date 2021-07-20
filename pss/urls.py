@@ -3,6 +3,9 @@ from .views import *
 
 urlpatterns = [
     #path('', CommonView.as_view(), name='index'),
+    path('login/', loginView.as_view(), name='login'),
+    path('register/', register, name='register'),
+    path('newuser/', new_user, name='new_user'),
     path('', ProjectView.as_view(), name='index'),
     path('vav/',VAV.as_view(), name='vav'),
     path('r/',read, name='read'),
@@ -16,7 +19,6 @@ urlpatterns = [
     path('download/',download_file),
     path('grd/',GRD.as_view(), name='grd'),
     #path('u/',construction, name='update'),
-    path('login/',loginView.as_view(),name='login')
     ]
 
 """

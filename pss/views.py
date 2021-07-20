@@ -21,6 +21,7 @@ import os
 from pathlib import Path
 from django.shortcuts import render
 from pss.models import *
+import django.contrib.auth
 
 from organisation_structure.models import *
 
@@ -45,7 +46,6 @@ def activities(request):
         if cart_items:
             i = 1
             for c in cart_items:
-                print(c.quantity)
                 '''pdf.cell(20, 10, txt=str(c.vav_size), align="R")
                 pdf.cell(10)
                 pdf.cell(20, 10, txt=str(c.design_airflow), align="R")
@@ -55,24 +55,28 @@ def activities(request):
                 pdf.set_font("Times", size=12,style='B')
                 pdf.set_left_margin(15)
                 pdf.set_right_margin(15)
-                pdf.image(os.path.join(BASE_DIR, "static\\assets\\img\\pa_logo.png"), 12, 5, 50, 10)
-                pdf.line(15, 15, 195, 15)
-                pdf.line(15, 45, 195, 45)
+                pdf.image(os.path.join(BASE_DIR, "static\\assets\\img\\pa_logo.png"), 12, 10, 50, 10)
+                pdf.line(15, 20, 195, 20)
+                #pdf.line(15, 50, 195, 50)
 
                 #pdf.cell(25, 4, txt="PRUDENT AIRE", align='L')
                 pdf.cell(145)
                 pdf.set_font("Times", size=14, style='B')
 
-                pdf.cell(20, 4, txt="VAV Selection", ln=1, align='L', )
+                pdf.cell(20, 10, txt="VAV Selection", ln=1, align='L', )
                 pdf.set_font("Times", size=12, style='B')
                 pdf.cell(20, 6, txt="", ln=1, align='L')
 
-                pdf.rect(15, 17, 180, 9)
+                pdf.rect(15, 21, 180, 10)
+                #pdf.rect(15.5, 22.5, 179, 9)
+                pdf.rect(130, 85, 65, 30)
+                pdf.rect(15, 85, 65, 30)
+
                 # pdf.cell(40, 2, txt="Date: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=5, align='R')
-                pdf.cell(20, 2, txt="Project Name:  " + user_current_proj_name.project_name, align='L')
+                pdf.cell(20, 1, txt="Project Name:  " + user_current_proj_name.project_name, align='L')
                 pdf.cell(110)
                 #pdf.cell(20, 2, txt="Tag:  " + str(user_current_proj_name.project_date), ln=1, align='L')
-                pdf.cell(20, 2, txt="Tag:  " + "VAV-"+str(i).zfill(2), ln=1, align='L')
+                pdf.cell(20, 1, txt="Tag:  " + "VAV-"+str(i).zfill(2), ln=1, align='L')
                 #print(str(i).zfill(2))
                 pdf.ln(8)
                 pdf.set_font("Times", size=12,style='')
@@ -86,22 +90,98 @@ def activities(request):
                 pdf.cell(20, 2, txt=user_current_proj_name.project_date.strftime("%d-%m-%Y"), ln=1, align='L')
                 pdf.ln(10)
                 pdf.ln(2)
-                pdf.cell(20,2,txt="Selection: ",ln=1)
+                pdf.set_font("Times", size=12,style='B')
+                pdf.cell(20,2,txt="Selection ",ln=1)
+                pdf.set_font("Times", size=10,style='')
                 pdf.ln(2)
-                pdf.cell(20, 6, txt="Quantity", border=1,align='C')
-                pdf.cell(20, 6, txt="VAV Size", border=1,align='C')
-                pdf.cell(27, 6, txt="Design airflow", border=1,align='C')
-                pdf.cell(24, 6, txt="Min. airflow", border=1,ln=1,align='C')
-                pdf.cell(20, 6, txt=str(c.quantity), border=1,align='C')
-                pdf.cell(20, 6, txt=str(c.vav_size), border=1,align='C')
-                pdf.cell(27, 6, txt=str(c.design_airflow), border=1,align='C')
-                pdf.cell(24, 6, txt=str(c.min_airflow), border=1,ln=1,align='C')
-
+                pdf.cell(30, 6, txt="Quantity", border=1, align='C')
+                pdf.cell(30, 6, txt="VAV Size", border=1, align='C')
+                pdf.cell(30, 6, txt="Design airflow", border=1, align='C')
+                pdf.cell(30, 6, txt="Min. airflow", border=1,  align='C')
+                pdf.cell(30, 6, txt="Discharge NR", border=1,  align='C')
+                pdf.cell(30, 6, txt="Radiated NR", border=1,  align='C', ln=1)
+                pdf.cell(30, 6, txt=str(c.quantity), border=1, align='C')
+                pdf.cell(30, 6, txt=str(c.vav_size), border=1, align='C')
+                pdf.cell(30, 6, txt=str(c.design_airflow), border=1, align='C')
+                pdf.cell(30, 6, txt=str(c.min_airflow), border=1, align='C')
+                pdf.cell(30, 6, txt=str(c.dNR), border=1, align='C')
+                pdf.cell(30, 6, txt=str(c.rNR), border=1, align='C', ln=1)
                 pdf.ln(10)
-                pdf.set_font("Times", size=9)
+                pdf.set_font("Times", size=12, style='B')
+                pdf.cell(20, 2, txt="Other Information ",align='L')
+                pdf.cell(95)
+                pdf.cell(20, 2, txt="Accessories ",align='L')
+                pdf.ln(4)
+                pdf.cell(120)
+                pdf.set_font("Times", size=10, style='B')
+                pdf.cell(20, 3, ln=1,align='R')
+                pdf.cell(120)
+                pdf.cell(20, 6, txt="Outlet:  ", align='R')
+                pdf.set_font("Times", size=10, style='')
+                pdf.cell(20, 6, txt=str(c.outlet_type), align='L', ln=1)
+                pdf.cell(120)
+                pdf.set_font("Times", size=10, style='B')
+                pdf.cell(20, 6, txt="Insulation:  ", align='R')
+                pdf.set_font("Times", size=10, style='')
+                pdf.cell(20, 6, txt=str(c.insulation), align='L', ln=1)
+                pdf.cell(120)
+                pdf.set_font("Times", size=10, style='B')
+                pdf.cell(20, 6, txt="Attenuator:  ", align='R')
+                pdf.set_font("Times", size=10, style='')
+                pdf.cell(20, 6, txt=str(c.attenuator), align='L', ln=1)
+                pdf.cell(120)
+                pdf.set_font("Times", size=10, style='B')
+                pdf.cell(20, 6, txt="Controls:  ", align='R')
+                pdf.set_font("Times", size=10, style='')
+                pdf.cell(20, 6, txt=str(c.controls), align='L', ln=1)
+                pdf.ln(15)
+                pdf.set_font("Times", size=12, style='B')
+                pdf.cell(20, 2, txt="Acoustic Summary ", ln=1)
+                pdf.set_font("Times", size=10, style='')
+                pdf.ln(2)
+
+                pdf.cell(40, 4, txt="", border=1, align='C')
+                pdf.cell(20, 4, txt="125Hz", border=1, align='C')
+                pdf.cell(20, 4, txt="250Hz", border=1, align='C')
+                pdf.cell(20, 4, txt="500Hz", border=1, align='C')
+                pdf.cell(20, 4, txt="1000Hz", border=1, align='C')
+                pdf.cell(20, 4, txt="2000Hz", border=1, align='C')
+                pdf.cell(20, 4, txt="4000Hz", border=1, align='C')
+                pdf.cell(20, 4, txt="NR", border=1, align='C',ln=1)
+                pdf.cell(40, 10, txt="Discharge Acoustic Data", border=1, align='C')
+                d_acdata = discharge_acoustic_data.objects.filter(size_inch=c.vav_size, cfm=c.cfm)
+                for d in d_acdata:
+                #r_acdata = radiated_acoustic_data.objects.get(cfm=c.cfm)
+                    pdf.cell(20, 10, txt=str(d.Hz125), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(d.Hz250), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(d.Hz500), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(d.Hz1000), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(d.Hz2000), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(d.Hz4000), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(c.dNR), border=1, align='C', ln=1)
+                pdf.cell(40, 10, txt="Radiated Acoustic Data", border=1, align='C')
+                r_acdata = radiated_acoustic_data.objects.filter(size_inch=c.vav_size, cfm=c.cfm)
+                for r in r_acdata:
+                    pdf.cell(20, 10, txt=str(r.Hz125), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(r.Hz250), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(r.Hz500), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(r.Hz1000), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(r.Hz2000), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(r.Hz4000), border=1, align='C')
+                    pdf.cell(20, 10, txt=str(c.rNR), border=1, align='C', ln=1)
+                pdf.ln(108)
+                pdf.set_font("Times", size=9, style='')
                 pdf.cell(180,4,txt="The results of this program are only an aid to the designer, " \
                                    "and are not a substitute for professional design services.",align='C',ln=1)
                 pdf.cell(180, 4, txt="All data subject to change without notice.",align='C',ln=1 )
+                pdf.ln(4)
+                pdf.cell(20, 1, txt="Printed : " + now.strftime("%d.%m.%Y %I:%M%p"),align='L')
+                pdf.cell(150)
+                pdf.cell(20, 1, txt='Page : '+str(pdf.page_no()), align='L')
+
+
+                #pdf.ln(6)
+                #pdf.cell(20, 2, txt="Printed", align='C', ln=1)
 
 
                 i+=1
@@ -456,5 +536,30 @@ def maintenance(request):
 
 def construction(request):
     return render(request,'siteunderconstruction.html')
+
+def register(request):
+    return render(request,'register.html')
+
+def new_user(request):
+    first_name = request.POST.get("first_name")
+    last_name = request.POST.get("last_name",None)
+    email = request.POST.get("email")
+    countrycode = request.POST.get("countryCode")
+    phone = request.POST.get("phone")
+    phone_number = "+"+countrycode+phone
+    password = request.POST.get("password")
+    existing_user_check = User.objects.filter(username=email)
+    if existing_user_check:
+        messages.error(request, 'User already exists')
+        return redirect(reverse_lazy('register'))
+    else:
+        user = User.objects.create_user(username=email, password=password)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = phone_number
+        user.is_superuser = False
+        user.is_staff = False
+        user.save()
+        return redirect('/register/')
 
 
