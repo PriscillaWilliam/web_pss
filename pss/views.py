@@ -76,7 +76,10 @@ def activities(request):
                 pdf.cell(20, 1, txt="Project Name:  " + user_current_proj_name.project_name, align='L')
                 pdf.cell(110)
                 #pdf.cell(20, 2, txt="Tag:  " + str(user_current_proj_name.project_date), ln=1, align='L')
-                pdf.cell(20, 1, txt="Tag:  " + "VAV-"+str(i).zfill(2), ln=1, align='L')
+                given_tag = ""
+                if c.tag:
+                    given_tag = c.tag + "-"
+                pdf.cell(20, 1, txt="Tag:  " + given_tag+"VAV-"+str(i).zfill(2), ln=1, align='L')
                 #print(str(i).zfill(2))
                 pdf.ln(8)
                 pdf.set_font("Times", size=12,style='')
@@ -269,12 +272,14 @@ class VAV(LoginRequiredMixin, TemplateView):
             user_current_proj_id = user_project_mapping.objects.get(user=self.request.user.id)
             user_current_proj_name = project_info.objects.get(id=user_current_proj_id.project)
             kwargs['current_project'] = user_current_proj_name.project_name
+            kwargs['units'] = user_current_proj_name.units
             kwargs['current_pid'] = user_current_proj_id.project
             kwargs['cart'] = cart.objects.filter(user=self.request.user.id,project=user_current_proj_id.project)
         else:
             kwargs['current_project'] = None
             kwargs['current_pid'] = None
             kwargs['cart'] = None
+            kwargs['units'] = "CFM"
         return super(VAV, self).get_context_data(**kwargs)
 
 vav_input_data = {}
@@ -284,11 +289,24 @@ def test(request):
     context = {}
     tag = request.POST.get('tag', False)
     quantity = request.POST.get('quantity', False)
+    units = request.POST.get('units')
+
     if not quantity:
         quantity = 1
     ahu = request.POST.get('ahu', False)
-    airflow_input = request.POST.get('airflow', False)
+    airflow_input_ori = request.POST.get('airflow', False)
     min_cfm = request.POST.get('min_airflow',False)
+
+    if units=="CFM":
+        airflow_input = airflow_input_ori
+    elif units=="CMH":
+        airflow_input = int(float(airflow_input_ori)/1.7)
+        airflow_input = str(airflow_input)
+
+    elif units=="L/S":
+        airflow_input = int(float(airflow_input_ori)*2.118)
+        airflow_input = str(airflow_input)
+
 
     user_current_proj_checker = user_project_mapping.objects.filter(user=request.user.id)
     if user_current_proj_checker:
@@ -301,7 +319,7 @@ def test(request):
         context['current_pid'] = None
 
     if not min_cfm:
-        min_cfm = int(float(airflow_input)*0.3)
+        min_cfm = int(float(airflow_input_ori)*0.3)
 
     #print(vav_input_data)
     pid = request.POST.get('pid')
@@ -311,7 +329,7 @@ def test(request):
     insulation = request.POST.get('insulation')
     controls = request.POST.get('controls')
     vav_input_data['size'] = size
-    vav_input_data['design_airflow'] = airflow_input
+    vav_input_data['design_airflow'] = airflow_input_ori
     vav_input_data['minimum_cfm'] = min_cfm
     vav_input_data['attenuator'] = attenuator
     vav_input_data['outlet_type'] = outlet_type
@@ -346,7 +364,7 @@ def test(request):
     context['data'] = zipped_list
     context['r_data'] = radiated_queryset
     context['d_data'] = discharge_queryset
-    context['airflow_input'] = airflow_input
+    context['airflow_input'] = airflow_input_ori
     context['min_airflow'] = min_cfm
     context['tag'] = tag
     context['quantity'] = quantity
@@ -355,6 +373,7 @@ def test(request):
     context['outlet_type'] = outlet_type
     context['insulation'] = insulation
     context['controls'] = controls
+    context['units'] = units
 
     return render(request, 'vav.html',context)
 
@@ -479,6 +498,7 @@ def save_project(request):
     consultant_name = request.POST.get("consultant_name", None)
     prepared_by = request.POST.get("p_by", None)
     remarks = request.POST.get("remarks", None)
+    units = request.POST.get("units")
     if not p_date:
         p_date = datetime.date.today()
     if new_p_name:
@@ -494,6 +514,7 @@ def save_project(request):
                                    , consultant_name=consultant_name
                                    , prepared_by=prepared_by
                                    , remarks=remarks
+                                   , units=units
                                    )
         new_project.save()
         #print(new_project.id)
@@ -520,6 +541,7 @@ def save_project(request):
         project_info_update.consultant_name = consultant_name
         project_info_update.prepared_by = prepared_by
         project_info_update.remarks = remarks
+        project_info_update.units = units
         project_info_update.save()
     print("Project added", request.user, datetime.datetime.now())
     return redirect('/vav/')

@@ -34,7 +34,7 @@
 
 
               <div class="card card-primary">
-              <div class="card-header"><h4>Register as new user</h4></div>
+              <!--<div class="card-header"><h4>Register as new user</h4></div>-->
                   {% if messages %}
                     {% for message in messages %}
                   <div class="form-group col-12">
@@ -72,17 +72,16 @@
                 </div>
                   </div>
 
-                      <label>Mobile No.</label>
+                  <label for="code" style="font-size:12px; color: #34395e;font-weight: 600; letter-spacing: .5px;">Mobile No.</label>
                    <div class="form-group col-12">
                      <div class="row">
-
                     <!-- country codes (ISO 3166) and Dial codes. -->
                 <select name="countryCode" id="code" class="form-control col-5" tabindex="4" >
                 <option data-countryCode="MY" value="60" Selected>Malaysia (+60)</option>
 
-            <option data-countryCode="GB" value="44">UK (+44)</option>
-            <option data-countryCode="US" value="1">USA (+1)</option>
-            <optgroup label="Other countries">
+                <option data-countryCode="GB" value="44">UK (+44)</option>
+                <option data-countryCode="US" value="1">USA (+1)</option>
+                <optgroup label="Other countries">
                 <option data-countryCode="DZ" value="213">Algeria (+213)</option>
                 <option data-countryCode="AD" value="376">Andorra (+376)</option>
                 <option data-countryCode="AO" value="244">Angola (+244)</option>
@@ -309,13 +308,15 @@
                 var check = function() {
                         if (document.getElementById('password').value ==
                           document.getElementById('password2').value) {
-                          document.getElementById('message').style.color = 'green';
+                          document.getElementById('message').style.color = '#d6065d';
+                          document.getElementById('message').style.fontSize = "small";
                           document.getElementById('message').innerHTML = '';
                           document.getElementById('reg_btn').removeAttribute('disabled');
 
                         } else {
-                          document.getElementById('message').style.color = 'red';
-                          document.getElementById('message').innerHTML = '  * does not match';
+                          document.getElementById('message').style.color = '#d6065d';
+                          document.getElementById('message').style.fontSize = "small";
+                          document.getElementById('message').innerHTML = '  *password does not match';
                           document.getElementById('reg_btn').disabled = true;
                         }
                       }
@@ -337,7 +338,7 @@
                     </div>
                   </div>
 
-                <br><br>
+                <br>
                   <div class="form-group">
                     <button id="reg_btn" type="submit" class="btn btn-primary btn-lg btn-block">
                       Register

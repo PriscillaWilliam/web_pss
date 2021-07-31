@@ -13,15 +13,29 @@
                     <input type="radio" id="select_old" name="radio" checked value="SELECT" onclick="showSelect()">
                     <label for="select_old">Choose Project</label>
                 </div>
-                <div class="controls col-sm-2">
+                <div class="controls col-sm-3">
                     <input type="radio" id="add_new" name="radio" value="ADD" onclick="showAdd()">
                     <label for="add_new">New Project</label>
                 </div>
+
+                <label class="col-sm-1 col-form-label">Units</label>
+                  <div class="controls col-sm-2">
+                    <select class="form-control input-sm" name="unit" id="unit" data-rel="chosen" {%if cart %}disabled{% endif %} onchange="unit_sel();">
+                        {%if p.units%}<option  value="{{p.units}}" selected>{{p.units}}</option>{%endif%}
+                        <option value="CFM">CFM</option>
+                        <option value="CMH">CMH</option>
+                        <option value="L/S">L/S</option>
+                    </select>
+                  </div>
+
             </div>
         </div>
 
 
                 <script>
+                function unit_sel(){
+                document.getElementById('units').value = document.getElementById('unit').value
+                }
                 function clear(){
                 document.getElementById('p_name').value = ''
                 document.getElementById('p_number').value = ''
@@ -34,6 +48,7 @@
                 document.getElementById('consultant_name').value = ''
                 document.getElementById('p_by').value = ''
                 document.getElementById('remarks').value = ''
+                document.getElementById('unit').removeAttribute("disabled");
                 }
                 function showAdd() {
                 clear();
@@ -57,6 +72,9 @@
         <form id="getform" method="get" action="/p/">
         <div id="mySELECT" style="display: block">
             <div class="form-group row">
+
+
+
                 <label class="col-sm-2 col-form-label">Project Name</label>
 
             <div class="col-sm-8">
@@ -99,8 +117,9 @@
                         <input class="form-control" type="text" id="new_p_name" name="new_p_name" value="">
                         </div>
                     </div>
-            </div>
+                </div>
 
+                <input type="hidden" id="units" name="units" value="CFM">
 
             <div class="form-group row">
             <label class="col-sm-2 col-form-label">Project Number</label>

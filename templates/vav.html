@@ -4,32 +4,41 @@
 
 <section class="section">
   <div class="section-header">
-      <div class="col-sm-3"> <h1>VAV Selection</h1> </div>
-      {% if current_project %}<div class="col-sm-6" align="center"> <strong>Project Name :- </strong> &nbsp; {{ current_project }} </div>{% endif %}
+      <div class="col-sm-4"> <h1>VAV Selection</h1> </div>
+      {% if current_project %}<div class="col-sm-6"> <strong>Project Name :- </strong> &nbsp; {{ current_project }} </div>{% endif %}
   </div>
+
   <div class="section-body">
+
         <form method="POST" action="/test/">
         {% csrf_token %}
+            <div class="card-header" style="background:#6777ef;border-radius: 1em;">
+                  <br>
+
             <div class="form-group row">
-          <label class="col-sm-1 col-form-label">Tag</label>
+
+                <label class="col-sm-1 col-form-label"><strong>TAG</strong></label>
         <div class="col-md-2">
             <input type="text" class="form-control" id="tag" name="tag"
                         value="{{tag}}">
         </div>
           <div class="col-sm-1"></div>
-          <label class="col-sm-1 col-form-label">Quantity</label>
+                <label class="col-sm-1 col-form-label"><strong>Quantity</strong></label>
           <div class="col-sm-2">
                 <input type="text" class="form-control" id="quantity" name="quantity"
                         value="{{quantity}}">
             </div>
           <div class="col-sm-1"></div>
-          <label class="col-sm-1 col-form-label">AHU</label>
+          <label class="col-sm-1 col-form-label"><strong>AHU</strong></label>
           <div class="col-sm-2">
                 <input type="text" class="form-control" id="ahu" name="ahu"
                         value="{{ahu}}">
             </div>
       </div>
+            </div>
 <br>
+
+            <div class="card-body">
       <div class="form-group row">
           <input type="hidden" id="pid" name="pid" value="{{current_pid}}"/>
         <label class="col-sm-1 col-form-label">Size</label>
@@ -46,13 +55,15 @@
                 <input type="text" class="form-control" id="airflow" name="airflow"
                        required value="{{airflow_input}}">
             </div>
-          <label class="col-sm-1 col-form-label mt-1">CFM</label>
+
+          <label class="col-sm-1 col-form-label mt-1">{{units}}</label>
+          <input type="hidden"  id="units" name="units" value="{{units}}">
           <label class="col-sm-1 col-form-label">Minimum Airflow</label>
           <div class="col-sm-2">
                 <input type="text" class="form-control" id="min_airflow" name="min_airflow"
                        value="{{min_airflow}}">
             </div>
-          <label class="col-sm-1 col-form-label mt-1">CFM</label>
+          <label class="col-sm-1 col-form-label mt-1">{{units}}</label>
       </div>
             <input type="hidden" id="staff_id" name="staff_id">
 
@@ -107,6 +118,7 @@
             <div class="col-sm-11 m-3" align="center">
           <button type="submit" id="getdata" class="btn btn-primary">Calculate</button>
         </div>
+            </div>
         </form>
 
 

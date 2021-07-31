@@ -121,6 +121,7 @@ class project_info(models.Model):
     consultant_name = models.CharField(max_length=255, db_column='consultant_name')
     prepared_by = models.CharField(max_length=255, db_column='prepared_by')
     remarks = models.CharField(max_length=255, db_column='remarks')
+    units = models.CharField(max_length=5, db_column='units')
    # created_at = models.DateField(db_column='created_at',default=datetime.now())
 
     class Meta:
