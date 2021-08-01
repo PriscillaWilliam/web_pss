@@ -7,6 +7,7 @@ urlpatterns = [
     path('register/', register, name='register'),
     path('newuser/', new_user, name='new_user'),
     path('', ProjectView.as_view(), name='index'),
+    path('del/',delete, name='delete'),
     path('vav/',VAV.as_view(), name='vav'),
     path('r/',read, name='read'),
     path('test/',test, name='test'),

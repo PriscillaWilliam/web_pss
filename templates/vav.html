@@ -114,6 +114,19 @@
                         </div>
         </div>
 
+            <div class="col-sm-1"></div>
+             <label class="col-sm-1 col-form-label">&#916; Pa</label>
+              <div class="col-sm-2">
+              <div class="controls">
+                            <select class="form-control input-sm" name="delta_p" id="delta_p" data-rel="chosen" >
+                             {%if delta_p == '200Pa'%}<option selected>{%else%}<option>{%endif%}200Pa</option>
+                             {%if delta_p == '100Pa'%}<option selected>{%else%}<option>{%endif%}100Pa</option>
+                             {%if delta_p == '500Pa'%}<option selected>{%else%}<option>{%endif%}500Pa</option>
+                            </select>
+                            </div>
+              </div>
+
+
             </div>
             <div class="col-sm-11 m-3" align="center">
           <button type="submit" id="getdata" class="btn btn-primary">Calculate</button>
@@ -149,8 +162,12 @@
            <!--<td><strong>{{ forloop.counter }} </strong></td>-->
         <tr>
             <td><strong>{{ rows.size_inch }}</strong></td>
-            <td><strong>{{ rows.discharge_nr }}</strong></td>
-            <td><strong>{{ rows.radiated_nr }}</strong></td>
+            <td><strong>{% if delta_p == '100Pa' %}{{rows.discharge_nr100}}
+                        {% elif delta_p == '200Pa' %}{{rows.discharge_nr}}
+                        {% elif delta_p == '500Pa' %}{{rows.discharge_nr500}}{% endif %}</strong></td>
+            <td><strong>{% if delta_p == '100Pa' %}{{rows.radiated_nr100}}
+                        {% elif delta_p == '200Pa' %}{{rows.radiated_nr}}
+                        {% elif delta_p == '500Pa' %}{{rows.radiated_nr500}}{% endif %}</strong></td>
             <td><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample{{ forloop.counter }}" role="button" aria-expanded="false" aria-controls="collapseExample{{ forloop.counter }}">
                         Expand
                       </a>

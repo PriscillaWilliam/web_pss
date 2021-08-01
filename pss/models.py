@@ -37,6 +37,10 @@ class performance(models.Model):
     cfm = models.IntegerField(db_column='cfm')
     discharge_nr = models.IntegerField(db_column='discharge_nr')
     radiated_nr = models.IntegerField(db_column='radiated_nr')
+    discharge_nr100 = models.IntegerField(db_column='100_discharge_nr')
+    radiated_nr100 = models.IntegerField(db_column='100_radiated_nr')
+    discharge_nr500 = models.IntegerField(db_column='500_discharge_nr')
+    radiated_nr500 = models.IntegerField(db_column='500_radiated_nr')
     class Meta:
         db_table = 'performance'
         managed = False

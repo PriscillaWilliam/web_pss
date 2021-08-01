@@ -57,10 +57,16 @@
                   <div class="dropdown-item-icon bg-info text-white">
                     {{ forloop.counter }}
                   </div>
-                  <div class="dropdown-item-desc">
-                    VAV - size {{ items.vav_size }}
+                  <div class="dropdown-item-desc col-sm-7">
+                    {%if items.tag%}{{items.tag}}, {%endif%}VAV - size {{ items.vav_size }}
                   <!--  <div class="time">Yesterday</div> -->
                   </div>
+                  <form method="POST" action="/del/">
+                  {% csrf_token %}
+                  <div>
+                      <button type="submit" class="btn btn-primary btn-block" id="delete" name="delete" value="{{items.id}}">Delete</button>
+                  </div>
+                    </form>
                 </a>
                 {% endfor %}
                 {% endif %}

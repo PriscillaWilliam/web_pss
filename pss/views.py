@@ -43,6 +43,12 @@ def activities(request):
         context['current_pid'] = user_current_proj_id.project
         context['cart'] = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
         cart_items = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
+        tag_name_none = False
+        if cart_items:
+            for c in cart_items:
+                if c.tag:
+                    tag_name_none = True
+
         if cart_items:
             i = 1
             for c in cart_items:
@@ -57,7 +63,7 @@ def activities(request):
                 pdf.set_right_margin(15)
                 pdf.image(os.path.join(BASE_DIR, "static\\assets\\img\\pa_logo.png"), 12, 10, 50, 10)
                 pdf.line(15, 20, 195, 20)
-                #pdf.line(15, 50, 195, 50)
+                pdf.line(15, 45, 195, 45)
 
                 #pdf.cell(25, 4, txt="PRUDENT AIRE", align='L')
                 pdf.cell(145)
@@ -69,27 +75,31 @@ def activities(request):
 
                 pdf.rect(15, 21, 180, 10)
                 #pdf.rect(15.5, 22.5, 179, 9)
-                pdf.rect(130, 85, 65, 30)
-                pdf.rect(15, 85, 65, 30)
+                pdf.rect(130, 90, 65, 30)
+                pdf.rect(15, 90, 65, 30)
 
                 # pdf.cell(40, 2, txt="Date: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=5, align='R')
                 pdf.cell(20, 1, txt="Project Name:  " + user_current_proj_name.project_name, align='L')
                 pdf.cell(110)
                 #pdf.cell(20, 2, txt="Tag:  " + str(user_current_proj_name.project_date), ln=1, align='L')
                 given_tag = ""
+                if not tag_name_none:
+                    given_tag = "VAV-"+str(i).zfill(2)
                 if c.tag:
-                    given_tag = c.tag + "-"
-                pdf.cell(20, 1, txt="Tag:  " + given_tag+"VAV-"+str(i).zfill(2), ln=1, align='L')
+                    given_tag = c.tag
+
+                pdf.cell(20, 1, txt="Tag:  " + given_tag, ln=1, align='L')
                 #print(str(i).zfill(2))
                 pdf.ln(8)
                 pdf.set_font("Times", size=12,style='')
                 pdf.cell(20, 2, txt="Project Number:  " + user_current_proj_name.project_number, align='L')
                 pdf.cell(90)
-                pdf.cell(35, 2, txt="Project Location:", align='L')
+                pdf.cell(35, 2, txt="Project Location:  ", align='L')
                 pdf.cell(20, 2, txt=str(user_current_proj_name.location), ln=1, align='L')
                 pdf.ln(3)
-                pdf.cell(110)
-                pdf.cell(35, 2, txt="Project Date: ", align='L')
+                pdf.cell(20, 2, txt="Consultant Name:  " + user_current_proj_name.consultant_name, align='L')
+                pdf.cell(90)
+                pdf.cell(35, 2, txt="Project Date:  ", align='L')
                 pdf.cell(20, 2, txt=user_current_proj_name.project_date.strftime("%d-%m-%Y"), ln=1, align='L')
                 pdf.ln(10)
                 pdf.ln(2)
@@ -97,8 +107,11 @@ def activities(request):
                 pdf.cell(20,2,txt="Selection ",ln=1)
                 pdf.set_font("Times", size=10,style='')
                 pdf.ln(2)
-                pdf.cell(30, 6, txt="Quantity", border=1, align='C')
-                pdf.cell(30, 6, txt="VAV Size", border=1, align='C')
+                pdf.cell(30, 12, txt="Quantity", border=1, align='C')
+                pdf.cell(30, 12, txt="VAV Size", border=1, align='C')
+                pdf.cell(60, 6, txt="Units in "+user_current_proj_name.units, border=1, align='C')
+                pdf.cell(60, 6, txt="Max NR Levels", border=1, align='C', ln=1)
+                pdf.cell(60)
                 pdf.cell(30, 6, txt="Design airflow", border=1, align='C')
                 pdf.cell(30, 6, txt="Min. airflow", border=1,  align='C')
                 pdf.cell(30, 6, txt="Discharge NR", border=1,  align='C')
@@ -118,21 +131,52 @@ def activities(request):
                 pdf.cell(120)
                 pdf.set_font("Times", size=10, style='B')
                 pdf.cell(20, 3, ln=1,align='R')
-                pdf.cell(120)
+                pdf.cell(10)
+                pdf.cell(25, 6, txt="Maximum "+user_current_proj_name.units+":  ", align='R')
+                airflow_data = airflow.objects.get(size_inch = c.vav_size)
+                max_units = airflow_data.cfm_max
+                min_units = airflow_data.cfm_min
+                units = user_current_proj_name.units
+                if units == "CMH":
+                    max_units = int(float(max_units) * 1.7)
+                    min_units = int(float(min_units) * 1.7)
+                elif units == "L/S":
+                    max_units = int(float(max_units) / 2.118)
+                    min_units = int(float(min_units) / 2.118)
+                #print(str(100-int(c.design_airflow/max_units*100))+"%")
+                pdf.set_font("Times", size=10, style='')
+                pdf.cell(20, 6, txt=str(max_units), align='L')
+                pdf.cell(65)
+                pdf.set_font("Times", size=10, style='B')
                 pdf.cell(20, 6, txt="Outlet:  ", align='R')
                 pdf.set_font("Times", size=10, style='')
                 pdf.cell(20, 6, txt=str(c.outlet_type), align='L', ln=1)
-                pdf.cell(120)
+                pdf.set_font("Times", size=10, style='B')
+                pdf.cell(10)
+                pdf.cell(25, 6, txt="Minimum " + user_current_proj_name.units + ":  ", align='R')
+                pdf.set_font("Times", size=10, style='')
+                pdf.cell(20, 6, txt=str(min_units), align='L')
+                pdf.cell(65)
                 pdf.set_font("Times", size=10, style='B')
                 pdf.cell(20, 6, txt="Insulation:  ", align='R')
                 pdf.set_font("Times", size=10, style='')
                 pdf.cell(20, 6, txt=str(c.insulation), align='L', ln=1)
-                pdf.cell(120)
+                pdf.set_font("Times", size=10, style='B')
+                pdf.cell(10)
+                pdf.cell(25, 6, txt="Design " + user_current_proj_name.units + ":  ", align='R')
+                pdf.set_font("Times", size=10, style='')
+                pdf.cell(20, 6, txt=str(c.design_airflow), align='L')
+                pdf.cell(65)
                 pdf.set_font("Times", size=10, style='B')
                 pdf.cell(20, 6, txt="Attenuator:  ", align='R')
                 pdf.set_font("Times", size=10, style='')
                 pdf.cell(20, 6, txt=str(c.attenuator), align='L', ln=1)
-                pdf.cell(120)
+                pdf.set_font("Times", size=10, style='B')
+                pdf.cell(10)
+                pdf.cell(25, 6, txt="Safety Factor :  ", align='R')
+                pdf.set_font("Times", size=10, style='')
+                pdf.cell(20, 6, txt=str(100 - int(c.design_airflow / max_units * 100)) + "%", align='L')
+                pdf.cell(65)
                 pdf.set_font("Times", size=10, style='B')
                 pdf.cell(20, 6, txt="Controls:  ", align='R')
                 pdf.set_font("Times", size=10, style='')
@@ -172,7 +216,20 @@ def activities(request):
                     pdf.cell(20, 10, txt=str(r.Hz2000), border=1, align='C')
                     pdf.cell(20, 10, txt=str(r.Hz4000), border=1, align='C')
                     pdf.cell(20, 10, txt=str(c.rNR), border=1, align='C', ln=1)
-                pdf.ln(108)
+                pdf.ln(10)
+                pdf.set_font("Times", size=11, style='')
+                pdf.cell(20,6, txt="Notes : ", align='L', ln=1)
+                pdf.cell(5)
+                pdf.cell(20,6, txt="1. Selections are based on Prudent Aire as Manufacturer.", align='L', ln=1)
+                pdf.cell(5)
+                pdf.cell(20,6, txt="2. All performance based on tests conducted in accordance with ASHRAE 130-2008 and ARI 880-2011.", align='L', ln=1)
+                pdf.cell(5)
+                pdf.cell(20,6, txt="3. All NR levels determined using ARI 885-2008.", align='L', ln=1)
+                pdf.cell(5)
+                pdf.cell(20,6, txt="4. All airflow, pressure losses and performance values have been corrected for altitude.", align='L', ln=1)
+                pdf.cell(5)
+                pdf.cell(20,6, txt="5. Units of measure: airflow (cfm, cmh, l/s), air pressure (in pa)", align='L', ln=1)
+                pdf.ln(57)
                 pdf.set_font("Times", size=9, style='')
                 pdf.cell(180,4,txt="The results of this program are only an aid to the designer, " \
                                    "and are not a substitute for professional design services.",align='C',ln=1)
@@ -284,6 +341,12 @@ class VAV(LoginRequiredMixin, TemplateView):
 
 vav_input_data = {}
 
+def delete(request):
+    item = request.POST.get('delete')
+    cart_items = cart.objects.get(id=item)
+    cart_items.delete()
+    return redirect('/vav/')
+
 def test(request):
     vav_input_data.clear()
     context = {}
@@ -314,9 +377,14 @@ def test(request):
         user_current_proj_name = project_info.objects.get(id=user_current_proj_id.project)
         context['current_project'] = user_current_proj_name.project_name
         context['current_pid'] = user_current_proj_id.project
+        if user_current_proj_id:
+            context['cart'] = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
+        else:
+            context['cart'] = None
     else:
         context['current_project'] = None
         context['current_pid'] = None
+        context['cart'] = None
 
     if not min_cfm:
         min_cfm = int(float(airflow_input_ori)*0.3)
@@ -328,6 +396,7 @@ def test(request):
     outlet_type = request.POST.get('outlet_type')
     insulation = request.POST.get('insulation')
     controls = request.POST.get('controls')
+    delta_p = request.POST.get('delta_p')
     vav_input_data['size'] = size
     vav_input_data['design_airflow'] = airflow_input_ori
     vav_input_data['minimum_cfm'] = min_cfm
@@ -335,6 +404,7 @@ def test(request):
     vav_input_data['outlet_type'] = outlet_type
     vav_input_data['insulation'] = insulation
     vav_input_data['controls'] = controls
+    vav_input_data['delta_p'] = delta_p
     vav_input_data['pid'] = context['current_pid']
     vav_input_data['tag'] = tag
     vav_input_data['quantity'] = quantity
@@ -349,7 +419,27 @@ def test(request):
         performance_query = performance.objects.filter(size_inch=rows.size_inch).extra(
             select={"cfm_new": "abs(cfm-"+airflow_input+")"}).order_by("cfm_new")[:1]
         display_queryset |= performance_query
+        '''
+        performance_query = performance.objects.only('id', 'size_inch', 'cfm', 'discharge_nr'+delta_col,
+                                                     'radiated_nr'+delta_col).filter(size_inch=rows.size_inch).extra(
+            select={"cfm_new": "abs(cfm-" + airflow_input + ")"}).order_by("cfm_new")[:1]
+        display_queryset |= performance_query
+        '''
+        '''col_name = ('id', 'size_inch', 'cfm', 'discharge_nr'+delta_col, 'radiated_nr'+delta_col)
 
+        test_q = performance.objects.all().values(*col_name)
+
+        test_q1 = performance.objects.filter(size_inch=rows.size_inch).extra(
+            select={"cfm_new": "abs(cfm-" + airflow_input + ")"}).values(*col_name).order_by("cfm_new")[:1]
+        performance_query = performance.objects.filter(size_inch=rows.size_inch).extra(
+            select={"cfm_new": "abs(cfm-" + airflow_input + ")"}).values(*col_name).order_by("cfm_new")[:1]
+        display_queryset |= performance_query
+        print(test_q1)
+        print(performance_query)
+        '''
+        print(delta_p)
+        for r in performance_query:
+            print(r.discharge_nr100)
         radiated_acoustic_query = radiated_acoustic_data.objects.filter(size_inch=rows.size_inch).extra(
             select={"cfm_new": "abs(cfm-"+airflow_input+")"}).order_by("cfm_new")[:1]
         radiated_queryset |= radiated_acoustic_query
@@ -373,6 +463,7 @@ def test(request):
     context['outlet_type'] = outlet_type
     context['insulation'] = insulation
     context['controls'] = controls
+    context['delta_p'] = delta_p
     context['units'] = units
 
     return render(request, 'vav.html',context)
@@ -471,6 +562,7 @@ class ProjectView(LoginRequiredMixin, TemplateView):
                 user_project_update = user_project_mapping.objects.get(user=self.request.user.id)
                 user_project_update.project = pid
                 user_project_update.save()
+                kwargs['cart'] = cart.objects.filter(user=self.request.user.id, project=p_name)
         else:
             kwargs['cart'] = None
             kwargs['current_project'] = None
