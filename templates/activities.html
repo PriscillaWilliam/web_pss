@@ -1,18 +1,26 @@
 {% extends 'index.html' %}
 {% block home %}{% endblock %}
 {% block content %}
+{% load static %}
 
 <section class="section">
 <div class="section-header">
     <div class="col-sm-4"><h1>Selection Summary</h1> </div>
+
   <!--    {% if cp %}<div class="col-sm-6 float-right"> Working Project Name :- {{ cp.project_name }} </div>{% endif %} -->
 </div>
 <div class="section-body">
-    <form method="GET" action="/download/">
+    <form method="GET" action="">
     {% csrf_token %}
         <div class="row">
             <div class="col-sm-2 text-primary"><label>Project Summary</label></div>
-            <div class="col-sm-10 float-right">{% if cart %}<button class="float-right btn btn-primary" value="Print">Download Report</button>{% endif %}</div>
+             <div class="col-sm-10">
+            {% if cart %}<button class="col-sm-2 float-right btn btn-primary" formaction="/download/" value="Print">Download Report</button>{% endif %}
+            <a href="#" onclick="createPDF()">
+            <!--<i class="fas fa-file-download"></i>-->
+                <p class="float-right">&nbsp;</p>
+                <button class="float-right btn btn-primary">Print Summary</button></a>
+                 </div>
         </div>
         <div class="container">
         <div class="row">
@@ -112,5 +120,173 @@
     </div>
     </div>
 </div>
+
 </section>
+
+
+
+ <div id="summary" style="display:none">
+
+<section class="section">
+    <div id="tableDiv">
+<div class="section-header">
+    <div class="col-sm-4"><h1><center>Selection Summary</center></h1> </div>
+  <!--    {% if cp %}<div class="col-sm-6 float-right"> Working Project Name :- {{ cp.project_name }} </div>{% endif %} -->
+</div>
+ <br>
+<div class="section-body">
+
+    <div class="col-sm-2 text-primary"><label><strong>Project Summary</strong></label></div>
+    <br>
+        <div class="row">
+            <table class="table" border="0">
+                <tbody align="center">
+        <tr>
+            <td style="text-align:left;" width="500"><strong>Project Name: </strong>{{cp.project_name}}</td>
+            <td style="text-align:left" width="500"><strong>Project Date: </strong>{{cp.project_date}}</td>
+        </tr>
+        <tr>
+            <td style="text-align:left"><strong>Project Number: </strong>{{cp.project_number}}</td>
+            <td style="text-align:left"><strong>Project Location: </strong>{{cp.location}}</td>
+        </tr>
+        <tr>
+            <td style="text-align:left"><strong>Project City: </strong>{{cp.city}}</td>
+            <td style="text-align:left"><strong>Project State: </strong>{{cp.state}}</td>
+        </tr>
+        <tr>
+            <td style="text-align:left"><strong>Project Engineer: </strong>{{cp.engineer}}</td>
+            <td style="text-align:left"><strong>Client Name: </strong>{{cp.client_name}}</td>
+        </tr>
+        <tr>
+            <td style="text-align:left"><strong>Consultant Name: </strong>{{cp.consultant_name}}</td>
+            <td style="text-align:left"><strong>Prepared By: </strong>{{cp.prepared_by}}</td>
+        </tr>
+        <tr>
+            <td style="text-align:left"><strong>Notes/Remarks: </strong>{{cp.remarks}}</td>
+            <td style="text-align:left"><strong>Units: </strong>{{cp.units}}</td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+
+    <br><br><br><label class="text-primary"><strong>Selection Summary</strong></label><br>
+    <br>
+    <div class="row">
+    <div class="col-12">
+        <div class="activities">
+            {% if cart %}
+            <table class="table table-bordered table-condensed table-light table-hover">
+        <thead align="center">
+            <th>Tag</th>
+            <th>Qty</th>
+            <th>AHU</th>
+            <th>VAV Size</th>
+            <th>Design Airflow</th>
+            <th>Min Airflow</th>
+            <th>Atten.</th>
+            <th>Outlet Type</th>
+            <th>Insulation</th>
+            <th>Controls</th>
+        </thead>
+        <tbody align="center" style="border-color:red;">
+        {% for c in cart %}
+           <!--<td><strong>{{ forloop.counter }} </strong></td>-->
+        <tr>
+            <td><strong>{{c.tag|default_if_none:""}}</strong></td>
+            <td><strong>{{c.quantity|default_if_none:""}}</strong></td>
+            <td><strong>{{c.ahu|default_if_none:""}}</strong></td>
+            <td><strong>{{c.vav_size}}</strong></td>
+            <td><strong>{{c.design_airflow}}</strong></td>
+            <td><strong>{{c.min_airflow}}</strong></td>
+            <td><strong>{{c.attenuator}}</strong></td>
+            <td><strong>{{c.outlet_type}}</strong></td>
+            <td><strong>{{c.insulation}}</strong></td>
+            <td width="75"><strong>{{c.controls|default_if_none:""}}</strong></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+<br><br>
+            <p>Notes :
+                    <br>1. Selections are based on Prudent Aire as Manufacturer.
+                    <br>2. All performance based on tests conducted in accordance with ASHRAE 130-2008 and ARI 880-2011.
+                    <br>3. All NR levels determined using ARI 885-2008.
+                    <br>4. All airflow, pressure losses and performance values have been corrected for altitude.
+                    <br>5. Units of measure: airflow (cfm, cmh, l/s), air pressure (in pa)
+</p>
+
+            {% endif %}
+        </div>
+    </div>
+    </div>
+</div>
+
+</div>
+
+    <div id="editor"></div>
+
+</section>
+
+<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+
+
+ <!-- General CSS Files -->
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+ <!-- CSS Libraries -->
+ <link rel="stylesheet" href="{% static 'node_modules/jqvmap/dist/jqvmap.min.css' %}">
+ <link rel="stylesheet" href="{% static 'node_modules/summernote/dist/summernote-bs4.css' %}">
+ <link rel="stylesheet" href="{% static 'node_modules/owl.carousel/dist/assets/owl.carousel.min.css' %}">
+ <link rel="stylesheet" href="{% static 'node_modules/owl.carousel/dist/assets/owl.theme.default.min.css' %}">
+
+ <!-- Template CSS -->
+ <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+ <link rel="stylesheet" href="{% static 'assets/css/components.css' %}">
+<script>
+
+  const doc = new jsPDF();
+  var specialElementHandlers = {
+    "#editor": function (element, renderer) {
+      return true;
+    },
+  };
+
+  $("#jspdf").click(function () {
+    doc.fromHTML($("#tableDiv").html(), 15, 15, {
+      width: 170,
+      elementHandlers: specialElementHandlers,
+    });
+    doc.save("Summary.pdf");
+  });
+
+  function createPDF() {
+      var sTable = document.getElementById('tableDiv').innerHTML;
+
+      var style = "<style>";
+      style = style + "table {width: 100%;font: 17px Calibri;}";
+      style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
+      style = style + "padding: 2px 3px;text-align: center;}";
+      style = style + "</style>";
+
+      // CREATE A WINDOW OBJECT.
+      var win = window.open('', '', 'height=700,width=700');
+
+      win.document.write('<html><head>');
+      win.document.write('<title></title>');   // <title> FOR PDF HEADER.
+      win.document.write(style);          // ADD STYLE INSIDE THE HEAD TAG.
+      win.document.write('</head>');
+      win.document.write('<body>');
+      win.document.write(sTable);         // THE TABLE CONTENTS INSIDE THE BODY TAG.
+      win.document.write('</body></html>');
+
+      win.document.close(); 	// CLOSE THE CURRENT WINDOW.
+
+      win.print();    // PRINT THE CONTENTS.
+  }
+</script>
+
+ </div>
 {% endblock%}

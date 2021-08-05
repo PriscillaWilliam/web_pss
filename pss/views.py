@@ -251,11 +251,6 @@ def activities(request):
                 pdf.cell(150)
                 pdf.cell(20, 1, txt='Page : '+str(pdf.page_no()), align='L')
 
-
-                #pdf.ln(6)
-                #pdf.cell(20, 2, txt="Printed", align='C', ln=1)
-
-
                 i+=1
 
     else:
@@ -263,46 +258,6 @@ def activities(request):
         context['current_pid'] = None
         context['cart'] = None
 
-
-
-    '''
-    pdf.add_page()
-    pdf.set_font("Times", size=12)    
-    pdf.set_left_margin(15)
-    pdf.set_right_margin(15)
-    pdf.line(15, 15, 195, 15)
-    pdf.cell(20, 4, txt="Prudent Aire",align='L')
-    pdf.cell(125)
-    pdf.cell(20, 4, txt="VAV Selection", ln=1, align='L', )
-    pdf.cell(20, 6, txt="", ln=1, align='L')
-
-    pdf.rect(15,17,180,9)
-
-    #pdf.cell(40, 2, txt="Date: " + now.strftime("%Y-%m-%d %H:%M:%S"), ln=5, align='R')
-
-    user_current_proj_checker = user_project_mapping.objects.filter(user=request.user.id)
-
-    if user_current_proj_checker:
-        user_current_proj_id = user_project_mapping.objects.get(user=request.user.id)
-        user_current_proj_name = project_info.objects.get(id=user_current_proj_id.project)
-        context['cp'] = user_current_proj_name
-        context['current_pid'] = user_current_proj_id.project
-        context['cart'] = cart.objects.filter(user=request.user.id, project=user_current_proj_id.project)
-        pdf.cell(20, 2, txt="Project Name:  " + user_current_proj_name.project_name, align='L')
-        pdf.cell(110)
-        pdf.cell(20, 2, txt="Tag:  " + str(user_current_proj_name.project_date), ln=1, align='L')
-        pdf.ln(7)
-        pdf.set_left_margin(25)
-        pdf.cell(20, 2, txt="Project Number: " + user_current_proj_name.project_number , align='L')
-        pdf.cell(90)
-        pdf.cell(20, 2, txt="Project Location: " + str(user_current_proj_name.location), ln=1, align='L')
-        pdf.ln(7)
-        
-    else:
-        context['cp'] = None
-        context['current_pid'] = None
-        context['cart'] = None
-    '''
     pdf.output(os.path.join(BASE_DIR, 'SelectionReport.pdf'))
     return render(request, 'activities.html', context)
 
@@ -315,7 +270,6 @@ def download_file(request):
     response = HttpResponse(fl, content_type=mime_type)
     response['Content-Disposition'] = "attachment; filename=%s" % filename
     return response
-
 
 class GRD(LoginRequiredMixin, TemplateView):
     #template_name = 'grd.html'
