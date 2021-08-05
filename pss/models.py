@@ -56,6 +56,7 @@ class discharge_acoustic_data(models.Model):
     Hz2000 = models.IntegerField(db_column='2000')
     Hz4000 = models.IntegerField(db_column='4000')
     NR = models.IntegerField(db_column='NR')
+    delta_p = models.IntegerField(db_column='delta_p')
     class Meta:
         db_table = 'discharge_acoustic_data'
         managed = False
@@ -71,6 +72,7 @@ class radiated_acoustic_data(models.Model):
     Hz2000 = models.IntegerField(db_column='2000')
     Hz4000 = models.IntegerField(db_column='4000')
     NR = models.IntegerField(db_column='NR')
+    delta_p = models.IntegerField(db_column='delta_p')
     class Meta:
         db_table = 'radiated_acoustic_data'
         managed = False
@@ -106,6 +108,7 @@ class cart(models.Model):
     project = models.IntegerField(db_column='project_id')
     product = models.IntegerField(db_column='product_id')
     cfm = models.IntegerField(db_column='cfm')
+    delta_p = models.CharField(max_length=5, db_column='delta_p')
 
     class Meta:
         db_table = 'cart'

@@ -61,15 +61,17 @@ def activities(request):
                 pdf.set_font("Times", size=12,style='B')
                 pdf.set_left_margin(15)
                 pdf.set_right_margin(15)
-                pdf.image(os.path.join(BASE_DIR, "static\\assets\\img\\pa_logo.png"), 12, 10, 50, 10)
+                pdf.image(os.path.join(BASE_DIR, "static\\assets\\img\\pa_logo.png"), 12, 8, 52, 12.5)
                 pdf.line(15, 20, 195, 20)
                 pdf.line(15, 45, 195, 45)
 
                 #pdf.cell(25, 4, txt="PRUDENT AIRE", align='L')
-                pdf.cell(145)
-                pdf.set_font("Times", size=14, style='B')
 
-                pdf.cell(20, 10, txt="VAV Selection", ln=1, align='L', )
+                pdf.set_font("Times", size=14, style='B')
+                pdf.ln(3)
+                pdf.cell(145)
+                pdf.cell(20, 7, txt="VAV Selection", ln=1, align='L', )
+
                 pdf.set_font("Times", size=12, style='B')
                 pdf.cell(20, 6, txt="", ln=1, align='L')
 
@@ -107,21 +109,29 @@ def activities(request):
                 pdf.cell(20,2,txt="Selection ",ln=1)
                 pdf.set_font("Times", size=10,style='')
                 pdf.ln(2)
-                pdf.cell(30, 12, txt="Quantity", border=1, align='C')
-                pdf.cell(30, 12, txt="VAV Size", border=1, align='C')
-                pdf.cell(60, 6, txt="Units in "+user_current_proj_name.units, border=1, align='C')
-                pdf.cell(60, 6, txt="Max NR Levels", border=1, align='C', ln=1)
-                pdf.cell(60)
-                pdf.cell(30, 6, txt="Design airflow", border=1, align='C')
-                pdf.cell(30, 6, txt="Min. airflow", border=1,  align='C')
-                pdf.cell(30, 6, txt="Discharge NR", border=1,  align='C')
-                pdf.cell(30, 6, txt="Radiated NR", border=1,  align='C', ln=1)
-                pdf.cell(30, 6, txt=str(c.quantity), border=1, align='C')
-                pdf.cell(30, 6, txt=str(c.vav_size), border=1, align='C')
-                pdf.cell(30, 6, txt=str(c.design_airflow), border=1, align='C')
-                pdf.cell(30, 6, txt=str(c.min_airflow), border=1, align='C')
-                pdf.cell(30, 6, txt=str(c.dNR), border=1, align='C')
-                pdf.cell(30, 6, txt=str(c.rNR), border=1, align='C', ln=1)
+                pdf.cell(17, 12, txt="Quantity", border=1, align='C')
+                pdf.cell(19, 12, txt="VAV Size", border=1, align='C')
+                pdf.cell(48, 6, txt="Units in "+user_current_proj_name.units, border=1, align='C')
+                pdf.cell(48, 6, txt="Static Pressure", border=1, align='C')
+                pdf.cell(48, 6, txt="Max NR Levels", border=1, align='C', ln=1)
+                pdf.cell(36)
+                pdf.cell(24, 6, txt="Design airflow", border=1, align='C')
+                pdf.cell(24, 6, txt="Min. airflow", border=1,  align='C')
+                pdf.line(109, 65.5, 108, 68)
+                pdf.line(109, 65.5, 110, 68)
+                pdf.line(108, 68, 110, 68)
+                pdf.cell(24, 6, txt=" \t Pa", border=1,  align='C')
+                pdf.cell(24, 6, txt="Pressure Drop", border=1,  align='C')
+                pdf.cell(24, 6, txt="Discharge NR", border=1,  align='C')
+                pdf.cell(24, 6, txt="Radiated NR", border=1,  align='C', ln=1)
+                pdf.cell(17, 6, txt=str(c.quantity), border=1, align='C')
+                pdf.cell(19, 6, txt=str(c.vav_size), border=1, align='C')
+                pdf.cell(24, 6, txt=str(c.design_airflow), border=1, align='C')
+                pdf.cell(24, 6, txt=str(c.min_airflow), border=1, align='C')
+                pdf.cell(24, 6, txt=c.delta_p[:3], border=1, align='C')
+                pdf.cell(24, 6, txt="69.9", border=1, align='C')
+                pdf.cell(24, 6, txt=str(c.dNR), border=1, align='C')
+                pdf.cell(24, 6, txt=str(c.rNR), border=1, align='C', ln=1)
                 pdf.ln(10)
                 pdf.set_font("Times", size=12, style='B')
                 pdf.cell(20, 2, txt="Other Information ",align='L')
@@ -196,7 +206,8 @@ def activities(request):
                 pdf.cell(20, 4, txt="4000Hz", border=1, align='C')
                 pdf.cell(20, 4, txt="NR", border=1, align='C',ln=1)
                 pdf.cell(40, 10, txt="Discharge Acoustic Data", border=1, align='C')
-                d_acdata = discharge_acoustic_data.objects.filter(size_inch=c.vav_size, cfm=c.cfm)
+                d_acdata = discharge_acoustic_data.objects.filter(size_inch=c.vav_size,
+                                                                  cfm=c.cfm, delta_p=c.delta_p[:3])
                 for d in d_acdata:
                 #r_acdata = radiated_acoustic_data.objects.get(cfm=c.cfm)
                     pdf.cell(20, 10, txt=str(d.Hz125), border=1, align='C')
@@ -207,7 +218,8 @@ def activities(request):
                     pdf.cell(20, 10, txt=str(d.Hz4000), border=1, align='C')
                     pdf.cell(20, 10, txt=str(c.dNR), border=1, align='C', ln=1)
                 pdf.cell(40, 10, txt="Radiated Acoustic Data", border=1, align='C')
-                r_acdata = radiated_acoustic_data.objects.filter(size_inch=c.vav_size, cfm=c.cfm)
+                r_acdata = radiated_acoustic_data.objects.filter(size_inch=c.vav_size,
+                                                                 cfm=c.cfm, delta_p=c.delta_p[:3])
                 for r in r_acdata:
                     pdf.cell(20, 10, txt=str(r.Hz125), border=1, align='C')
                     pdf.cell(20, 10, txt=str(r.Hz250), border=1, align='C')
@@ -437,18 +449,17 @@ def test(request):
         print(test_q1)
         print(performance_query)
         '''
-        print(delta_p)
-        for r in performance_query:
-            print(r.discharge_nr100)
-        radiated_acoustic_query = radiated_acoustic_data.objects.filter(size_inch=rows.size_inch).extra(
+        #print(delta_p)
+
+        radiated_acoustic_query = radiated_acoustic_data.objects.filter(size_inch=rows.size_inch,delta_p=delta_p[:3]).extra(
             select={"cfm_new": "abs(cfm-"+airflow_input+")"}).order_by("cfm_new")[:1]
         radiated_queryset |= radiated_acoustic_query
 
-        discharge_acoustic_query = discharge_acoustic_data.objects.filter(size_inch=rows.size_inch).extra(
+        discharge_acoustic_query = discharge_acoustic_data.objects.filter(size_inch=rows.size_inch,delta_p=delta_p[:3]).extra(
             select={"cfm_new": "abs(cfm-" + airflow_input + ")"}).order_by("cfm_new")[:1]
         discharge_queryset |= discharge_acoustic_query
 
-    zipped_list = zip(display_queryset,discharge_queryset,radiated_queryset)
+    zipped_list = zip(display_queryset, discharge_queryset, radiated_queryset)
 
     #context['data'] = display_queryset
     context['data'] = zipped_list
@@ -482,6 +493,7 @@ def disp(request):
                      , outlet_type=vav_input_data['outlet_type']
                      , insulation=vav_input_data['insulation']
                      , controls=vav_input_data['controls']
+                     , delta_p=vav_input_data['delta_p']
                      , vav_size=selected_vav_info[0]
                      , cfm=selected_vav_info[1]
                      , dNR=selected_vav_info[2]

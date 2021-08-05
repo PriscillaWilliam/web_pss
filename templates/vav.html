@@ -173,7 +173,12 @@
                       </a>
             </td>
             <td>{% if current_project %}
-                <button name="addVav" value="{{rows.size_inch}}^{{rows.cfm}}^{{rows.discharge_nr}}^{{rows.radiated_nr}}"
+                <button name="addVav"
+                        value="{{rows.size_inch}}^{{rows.cfm}}^
+                        {% if delta_p == '100Pa' %}{{rows.discharge_nr100}}^{{rows.radiated_nr100}}
+                        {% elif delta_p == '200Pa' %}{{rows.discharge_nr}}^{{rows.radiated_nr}}
+                        {% elif delta_p == '500Pa' %}{{rows.discharge_nr500}}^{{rows.radiated_nr500}}
+                        {% endif %}"
                         type="submit" id="add" class="btn btn-primary mt-1" >Add</button>
                 {%else%}
                 <button class="btn btn-primary mt-1" disabled>Add</button>
