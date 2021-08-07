@@ -26,7 +26,7 @@ SECRET_KEY = '2n0z15(2ci!1vohj=ygo$_07v148primby28)xk7#f(oe60f2$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1', '210.1.227.21']
+ALLOWED_HOSTS = ['localhost','127.0.0.1', '210.1.227.21', 'software.prudentaire.com']
 
 
 # Application definition
