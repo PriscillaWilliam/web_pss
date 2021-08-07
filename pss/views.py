@@ -61,7 +61,7 @@ def activities(request):
                 pdf.set_font("Times", size=12,style='B')
                 pdf.set_left_margin(15)
                 pdf.set_right_margin(15)
-                pdf.image(os.path.join(BASE_DIR, "static\\assets\\img\\pa_logo.png"), 12, 8, 52, 12.5)
+                pdf.image(os.path.join(BASE_DIR, "static/assets/img/pa_logo.png"), 12, 8, 52, 12.5)
                 pdf.line(15, 20, 195, 20)
                 pdf.line(15, 45, 195, 45)
 
