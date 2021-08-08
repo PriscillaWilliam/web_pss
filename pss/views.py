@@ -644,6 +644,26 @@ def new_user(request):
         user.is_staff = False
         user.save()
 
+        import smtplib
+        from email.message import EmailMessage
+
+        EmailAdd = "noreply4pss@gmail.com"  # senders Gmail id over here
+        Pass = "prudent123"  # senders Gmail's Password over here
+
+        msg = EmailMessage()
+        msg['Subject'] = 'Thank you for your registration!'  # Subject of Email
+        msg['From'] = EmailAdd
+        msg['To'] = email # Reciever of the Mail
+        msg.set_content('Hello '+last_name+',\n\nThank you for registering with Prudent Aire Sdn Bhd. \n'
+                                           'You many login now with your registered email and password '
+                                           'to start using the Performance Selection Software.'
+                                           '\n\n')  # Email body or Content
+
+        #### >> Code from here will send the message << ####
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:  # Added Gmails SMTP Server
+            smtp.login(EmailAdd, Pass)  # This command Login SMTP Library using your GMAIL
+            smtp.send_message(msg)  # This Sends the message
+
         return redirect('/register/')
 
 
