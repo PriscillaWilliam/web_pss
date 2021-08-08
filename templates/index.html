@@ -118,17 +118,20 @@
                 <span>Project Information</span></a></li>
             <li class="menu-header">Products Menu</li>
             <li class="menu-header"></li>
-            <li class="{{name}}"><a class="nav-link" href="{% url 'vav'%}"><i class="fas fa-id-card"></i>
-                <span>Variable Air Volume Units (VAV)</span></a></li>
+            <li class="{{name}}"><a class="nav-link" href="{% url 'vav'%}"><!--<i class="fas fa-id-card"></i>-->
+              <img src="{% static 'assets/img/vav.png' %}" alt="logo" width="50" height="50">
+              <span>Variable Air Volume Units (VAV)</span></a></li>
             <li class="menu-header"></li>
-            <li class="{{name1}}"><a class="nav-link" href="{% url 'grd'%}"><i class="fas fa-address-card"></i>
+            <li class="{{name1}}"><a class="nav-link" href="{% url 'grd'%}"><!--<i class="fas fa-address-card"></i>-->
+              <img src="{% static 'assets/img/grilles.png' %}" alt="logo" width="50" height="50">
                 <span>Grilles, Registers and Diffusers (GRD)</span></a></li>
             <li class="menu-header"></li>
-            <li class="{{name2}}"><a class="nav-link" href="{% url 'read'%}"><i class="fas fa-id-card-alt"></i>
-                <span>Dampers</span></a></li>
-            <li class="menu-header"></li>
+            <li class="{{name2}}"><a class="nav-link" href="{% url 'read'%}"><!--<i class="fas fa-id-card-alt"></i>-->
+              <img src="{% static 'assets/img/damper.png' %}" alt="logo" width="50" height="50">
+              <span>Dampers</span></a></li>
+            <!--<li class="menu-header"></li>
             <li class="{{name3}}"><a class="nav-link" href="{% url 'lost_damage'%}"><i
-                  class="fas fa-file-signature"></i><span>Reports</span></a></li>
+                  class="fas fa-file-signature"></i><span>Reports</span></a></li>-->
            </ul>
           <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
             <a href="https://www.prudentaire.com/" class="btn btn-primary btn-lg btn-block btn-icon-split">

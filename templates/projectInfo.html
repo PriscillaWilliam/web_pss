@@ -9,15 +9,14 @@
     <div class="section-body">
         <div class="form-group row">
             <div class="col-sm-2"></div>
-                <div class="controls col-sm-2">
-                    <input type="radio" id="select_old" name="radio" checked value="SELECT" onclick="showSelect()">
-                    <label for="select_old">Choose Project</label>
-                </div>
-                <div class="controls col-sm-3">
+            <div class="controls col-sm-2">
                     <input type="radio" id="add_new" name="radio" value="ADD" onclick="showAdd()">
                     <label for="add_new">New Project</label>
                 </div>
-
+                <div class="controls col-sm-3">
+                    <input type="radio" id="select_old" name="radio" checked value="SELECT" onclick="showSelect()">
+                    <label for="select_old">Choose Project</label>
+                </div>
                 <label class="col-sm-1 col-form-label">Units</label>
                   <div class="controls col-sm-2">
                     <select class="form-control input-sm" name="unit" id="unit" data-rel="chosen" {%if cart %}disabled{% endif %} onchange="unit_sel();">
@@ -27,11 +26,8 @@
                         <option value="L/S">L/S</option>
                     </select>
                   </div>
-
             </div>
         </div>
-
-
                 <script>
                 function unit_sel(){
                 document.getElementById('units').value = document.getElementById('unit').value
@@ -72,11 +68,7 @@
         <form id="getform" method="get" action="/p/">
         <div id="mySELECT" style="display: block">
             <div class="form-group row">
-
-
-
                 <label class="col-sm-2 col-form-label">Project Name</label>
-
             <div class="col-sm-8">
                 <div class="controls">
                        <!-- old working select tag -->

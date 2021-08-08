@@ -651,11 +651,11 @@ def new_user(request):
         Pass = "prudent123"  # senders Gmail's Password over here
 
         msg = EmailMessage()
-        msg['Subject'] = 'Thank you for your registration!'  # Subject of Email
+        msg['Subject'] = 'Thankyou for your registration!'  # Subject of Email
         msg['From'] = EmailAdd
         msg['To'] = email # Reciever of the Mail
-        msg.set_content('Hello '+last_name+',\n\nThank you for registering with Prudent Aire Sdn Bhd. \n'
-                                           'You many login now with your registered email and password '
+        msg.set_content('Hello '+last_name+',\n\n\tThank you for registering with PrudentAire Sdn Bhd.\n'
+                                           '\tYou many login now with your registered email and password '
                                            'to start using the Performance Selection Software.'
                                            '\n\n')  # Email body or Content
 
@@ -664,6 +664,6 @@ def new_user(request):
             smtp.login(EmailAdd, Pass)  # This command Login SMTP Library using your GMAIL
             smtp.send_message(msg)  # This Sends the message
 
-        return redirect('/register/')
+        return redirect('/login/')
 
 

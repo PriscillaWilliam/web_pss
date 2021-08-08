@@ -35,6 +35,7 @@
 
               <div class="card card-primary">
               <!--<div class="card-header"><h4>Register as new user</h4></div>-->
+                <div class="card-body">
                   {% if messages %}
                     {% for message in messages %}
                   <div class="form-group col-12">
@@ -47,9 +48,6 @@
                   </div>
                 {% endfor %}
                 {% endif %}
-
-
-              <div class="card-body">
                   <form method="POST" action="/newuser/" class="needs-validation">
               {% csrf_token %}
 
