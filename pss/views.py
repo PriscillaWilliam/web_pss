@@ -665,6 +665,6 @@ def new_user(request):
             smtp.login(EmailAdd, Pass)  # This command Login SMTP Library using your GMAIL
             smtp.send_message(msg)  # This Sends the message
 
-        return redirect('/login/')
+        return redirect('/register/')
 
 
