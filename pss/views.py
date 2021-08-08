@@ -134,7 +134,7 @@ def activities(request):
                 pdf.cell(24, 6, txt=str(c.rNR), border=1, align='C', ln=1)
                 pdf.ln(10)
                 pdf.set_font("Times", size=12, style='B')
-                pdf.cell(20, 2, txt="Other Information ",align='L')
+                pdf.cell(20, 2, txt="Standard Information ",align='L')
                 pdf.cell(95)
                 pdf.cell(20, 2, txt="Accessories ",align='L')
                 pdf.ln(4)
@@ -146,6 +146,7 @@ def activities(request):
                 airflow_data = airflow.objects.get(size_inch = c.vav_size)
                 max_units = airflow_data.cfm_max
                 min_units = airflow_data.cfm_min
+                #print(max_units,min_units)
                 units = user_current_proj_name.units
                 if units == "CMH":
                     max_units = int(float(max_units) * 1.7)
@@ -640,6 +641,7 @@ def new_user(request):
         user.is_superuser = False
         user.is_staff = False
         user.save()
+
         return redirect('/register/')
 
 
