@@ -486,7 +486,8 @@ def index(request):
 
 
 def read(request):
-    return render(request, 'viewimage.html', {'name2': 'active'})
+    #return render(request, 'viewimage.html', {'name2': 'active'})
+    return render(request, 'siteunderconstruction.html', {'name2': 'active'})
 
 
 def lost_damage(request):
