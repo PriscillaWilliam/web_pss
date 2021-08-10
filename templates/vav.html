@@ -25,8 +25,8 @@
           <div class="col-sm-1"></div>
                 <label class="col-sm-1 col-form-label"><strong>Quantity</strong></label>
           <div class="col-sm-2">
-                <input type="text" class="form-control" id="quantity" name="quantity"
-                        value="{{quantity}}" pattern="\d*" maxlength="4">
+                <input type="number" class="form-control" id="quantity" name="quantity"
+                        value="{{quantity}}" max="500">
             </div>
           <div class="col-sm-1"></div>
           <label class="col-sm-1 col-form-label"><strong>AHU</strong></label>
@@ -52,16 +52,16 @@
           <div class="col-sm-1"></div>
           <label class="col-sm-1 col-form-label">Design Airflow</label>
           <div class="col-sm-2">
-                <input type="text" class="form-control" id="airflow" name="airflow"
-                       required value="{{airflow_input}}">
+                <input type="number" class="form-control" id="airflow" name="airflow"
+                       required min="45" max="6699" value="{{airflow_input}}">
             </div>
 
           <label class="col-sm-1 col-form-label mt-1">{{units}}</label>
           <input type="hidden"  id="units" name="units" value="{{units}}">
           <label class="col-sm-1 col-form-label">Minimum Airflow</label>
           <div class="col-sm-2">
-                <input type="text" class="form-control" id="min_airflow" name="min_airflow"
-                       value="{{min_airflow}}">
+                <input type="number" class="form-control" id="min_airflow" name="min_airflow"
+                       value="{{min_airflow}}" min="10" max="9999">
             </div>
           <label class="col-sm-1 col-form-label mt-1">{{units}}</label>
       </div>
